@@ -1,11 +1,14 @@
 import requests
-from typing import Dict, Any, Type, Optional, Literal
+from typing import Dict, Any, Type, Optional, Literal, TypeVar
 import json
 from pydantic import BaseModel
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
+
+# Define a TypeVar bound to BaseModel
+T = TypeVar('T', bound=BaseModel)
 
 class ScraperClient:
     """Python SDK for the Structured Scraper API"""
@@ -40,11 +43,11 @@ class ScraperClient:
     def scrape(
         self, 
         url: str, 
-        schema_class: Type[BaseModel], 
+        schema_class: Type[T], 
         timeout: int = int(os.getenv("DEFAULT_TIMEOUT"))/1000,
         method: Literal["fast", "balanced", "thorough"] = "fast",
         prompt: Optional[str] = None
-    ) -> BaseModel:
+    ) -> T:
         """
         Scrape a webpage and return a validated Pydantic model instance.
         
@@ -56,7 +59,7 @@ class ScraperClient:
             prompt: Additional custom prompt for extra configurability
             
         Returns:
-            Validated Pydantic model instance
+            Validated Pydantic model instance of the same type as schema_class
             
         Raises:
             requests.RequestException: If the API request fails
