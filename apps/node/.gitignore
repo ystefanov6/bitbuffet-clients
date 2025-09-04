@@ -1,0 +1,5 @@
+
+# Ignore files associated with build artifacts
+node_modules/
+dist/
+
