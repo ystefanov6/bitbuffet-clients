@@ -1,6 +1,11 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { z, ZodSchema } from 'zod';
 import { zodToJsonSchema } from 'zod-to-json-schema';
+import dotenv from 'dotenv'
+import path from 'path'
+
+// Configure dotenv to look for .env file in the root directory
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') })
 
 type ScrapingMethod = 'fast' | 'balanced' | 'thorough';
 
@@ -8,7 +13,7 @@ export class ScraperClient {
   private baseUrl: string;
   private client: AxiosInstance;
 
-  constructor(baseUrl: string = 'http://localhost:8000') {
+  constructor(baseUrl: string = `${process.env.BASE_API_URL}:${process.env.BASE_API_PORT}`) {
     this.baseUrl = baseUrl.replace(/\/$/, '');
     this.client = axios.create({
       baseURL: this.baseUrl,
@@ -24,8 +29,8 @@ export class ScraperClient {
   async scrape<T>(
     url: string, 
     schema: ZodSchema<T>, 
-    timeout: number = 60000,
-    method: ScrapingMethod = 'balanced',
+    timeout: number = Number(process.env.DEFAULT_TIMEOUT),
+    method: ScrapingMethod = 'fast',
     prompt?: string
   ): Promise<T> {
     try {

@@ -18,7 +18,6 @@ async function testScraping() {
     const resultArticle = await client.scrape(
       urlArticle, 
       ArticleSchema,
-      6000
     );
     console.log('Article result:', resultArticle);
     

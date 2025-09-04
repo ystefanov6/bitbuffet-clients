@@ -2,11 +2,16 @@ import requests
 from typing import Dict, Any, Type, Optional, Literal
 import json
 from pydantic import BaseModel
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class ScraperClient:
     """Python SDK for the Structured Scraper API"""
+    base_url = f"{os.getenv("BASE_API_URL")}:{os.getenv("BASE_API_PORT")}"
     
-    def __init__(self, base_url: str = "http://localhost:8000"):
+    def __init__(self, base_url: str = base_url):
         self.base_url = base_url.rstrip('/')
         self.session = requests.Session()
     
@@ -36,8 +41,8 @@ class ScraperClient:
         self, 
         url: str, 
         schema_class: Type[BaseModel], 
-        timeout: int = 60,
-        method: Literal["fast", "balanced", "thorough"] = "balanced",
+        timeout: int = int(os.getenv("DEFAULT_TIMEOUT"))/1000,
+        method: Literal["fast", "balanced", "thorough"] = "fast",
         prompt: Optional[str] = None
     ) -> BaseModel:
         """
