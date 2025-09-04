@@ -87,7 +87,11 @@ class ScraperClient:
             )
             response.raise_for_status()
             
-            result = response.json()
+            try:
+                result = response.json()
+            except (json.JSONDecodeError, ValueError) as e:
+                raise ValueError(f"Invalid JSON response: {e}")
+                
             if not result.get('success'):
                 raise ValueError(f"API returned error: {result.get('error', 'Unknown error')}")
             
@@ -96,5 +100,3 @@ class ScraperClient:
             
         except requests.RequestException as e:
             raise requests.RequestException(f"API request failed: {e}")
-        except json.JSONDecodeError as e:
-            raise ValueError(f"Invalid JSON response: {e}")

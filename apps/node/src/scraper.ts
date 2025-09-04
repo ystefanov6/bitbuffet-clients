@@ -62,11 +62,11 @@ export class ScraperClient {
       return schema.parse(result.data);
       
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error(`API request failed: ${error.message}`);
-      }
       if (error instanceof z.ZodError) {
         throw new Error(`Validation failed: ${error.message}`);
+      }
+      if (axios.isAxiosError(error)) {
+        throw new Error(`API request failed: ${error.message}`);
       }
       throw error;
     }
