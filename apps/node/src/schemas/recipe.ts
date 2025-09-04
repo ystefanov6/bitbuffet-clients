@@ -12,13 +12,13 @@ const TimeSchema = z.object({
 });
 
 const MetricSchema = z.object({
-  amount: z.number().optional(),
+  amount: z.number().nullish().describe("Amount in metric units. Convert to number ALWAYS. If string is '1-2' - go in between (1.5)."),
   unitShort: z.string(),
   unitLong: z.string(),
 });
 
 const ImperialSchema = z.object({
-  amount: z.number().optional(),
+  amount: z.number().nullish().describe("Amount in imperial units. Convert to number ALWAYS. If string is '1-2' - go in between (1.5)."),
   unitShort: z.string(),
   unitLong: z.string(),
 });
@@ -30,8 +30,8 @@ const MeasuresSchema = z.object({
 
 const IngredientsSchema = z.object({
   name: z.string(),
-  preparation: z.string().optional(),
-  purpose: z.string().optional(),
+  preparation: z.string().nullish(),
+  purpose: z.string().nullish(),
   measures: MeasuresSchema,
 });
 
@@ -65,7 +65,7 @@ export const RecipeSchema = z.object({
   description: z.string(),
   image_url: z.string(),
   author: z.string(),
-  video_url: z.string().optional(),
+  video_url: z.string().nullish(),
   categories: z.array(z.string()),
   cuisine: z.string(),
   time: TimeSchema,
