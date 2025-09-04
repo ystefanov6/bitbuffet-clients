@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class Rating(BaseModel):
@@ -12,12 +12,12 @@ class Time(BaseModel):
     total: int
 
 class Metric(BaseModel):
-    amount: Optional[float] = None
+    amount: Optional[float] = Field(None, description="Amount in metric units. Convert to number ALWAYS. If string is '1-2' - go in between (1.5).", json_schema_extra={'example': {'amount': 1.5}})
     unitShort: str
     unitLong: str
 
 class Imperial(BaseModel):
-    amount: Optional[float] = None
+    amount: Optional[float] = Field(None, description="Amount in imperial units. Convert to number ALWAYS. If string is '1-2' - go in between (1.5).", json_schema_extra={'example': {'amount': 1.5}})
     unitShort: str
     unitLong: str
 

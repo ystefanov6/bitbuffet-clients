@@ -4,8 +4,7 @@ Test suite for the Python Structured Scraper Client SDK
 
 import pytest
 import requests
-from unittest.mock import Mock, patch, MagicMock
-from typing import Dict, Any
+from unittest.mock import Mock, patch
 
 from src.scraper import ScraperClient
 from tests.recipe_schema import RecipeSchema
@@ -110,7 +109,7 @@ class TestScraperClient:
         client = ScraperClient(base_url=url_with_slash)
         assert client.base_url == "https://api.example.com"
     
-    def test_pydantic_to_json_schema_conversion(self, client):
+    def test_pydantic_to_json_schema_conversion(self, client: ScraperClient):
         """Test conversion of Pydantic schema to JSON schema"""
         schema = client._pydantic_to_json_schema(ArticleSchema)
         
@@ -123,7 +122,7 @@ class TestScraperClient:
         assert "important_quotes" in schema["properties"]
     
     @patch('src.scraper.requests.Session.post')
-    def test_successful_recipe_scraping(self, mock_post, client, mock_recipe_response):
+    def test_successful_recipe_scraping(self, mock_post: Mock, client: ScraperClient, mock_recipe_response):
         """Test successful recipe scraping with all parameters"""
         # Setup mock response
         mock_response = Mock()
@@ -157,7 +156,7 @@ class TestScraperClient:
         assert call_args[1]['json']['prompt'] == "Focus on extracting detailed cooking instructions"
     
     @patch('src.scraper.requests.Session.post')
-    def test_successful_article_scraping(self, mock_post, client, mock_article_response):
+    def test_successful_article_scraping(self, mock_post: Mock, client: ScraperClient, mock_article_response):
         """Test successful article scraping with minimal parameters"""
         # Setup mock response
         mock_response = Mock()
@@ -185,7 +184,7 @@ class TestScraperClient:
         assert 'prompt' not in call_args[1]['json']  # no prompt provided
     
     @patch('src.scraper.requests.Session.post')
-    def test_api_error_response(self, mock_post, client, mock_error_response):
+    def test_api_error_response(self, mock_post: Mock, client: ScraperClient, mock_error_response):
         """Test handling of API error responses"""
         # Setup mock response
         mock_response = Mock()
@@ -198,7 +197,7 @@ class TestScraperClient:
             client.scrape("https://example.com", ArticleSchema)
     
     @patch('src.scraper.requests.Session.post')
-    def test_network_error_handling(self, mock_post, client):
+    def test_network_error_handling(self, mock_post: Mock, client: ScraperClient):
         """Test handling of network errors"""
         # Setup mock to raise RequestException
         mock_post.side_effect = requests.RequestException("Connection failed")
@@ -208,7 +207,7 @@ class TestScraperClient:
             client.scrape("https://example.com", ArticleSchema)
     
     @patch('src.scraper.requests.Session.post')
-    def test_invalid_json_response(self, mock_post, client):
+    def test_invalid_json_response(self, mock_post: Mock, client: ScraperClient):
         """Test handling of invalid JSON responses"""
         # Setup mock response with invalid JSON
         mock_response = Mock()
@@ -221,7 +220,7 @@ class TestScraperClient:
             client.scrape("https://example.com", ArticleSchema)
     
     @patch('src.scraper.requests.Session.post')
-    def test_http_error_handling(self, mock_post, client):
+    def test_http_error_handling(self, mock_post: Mock, client: ScraperClient):
         """Test handling of HTTP errors (4xx, 5xx)"""
         # Setup mock response to raise HTTP error
         mock_response = Mock()
@@ -232,7 +231,7 @@ class TestScraperClient:
         with pytest.raises(requests.RequestException, match="API request failed: 404 Not Found"):
             client.scrape("https://example.com", ArticleSchema)
     
-    def test_scrape_method_parameters(self, client):
+    def test_scrape_method_parameters(self, client: ScraperClient):
         """Test that scrape method accepts all valid method parameters"""
         valid_methods = ["fast", "balanced", "thorough"]
         
@@ -257,7 +256,7 @@ class TestScraperClient:
                 assert isinstance(result, ArticleSchema)
     
     @patch('src.scraper.requests.Session.post')
-    def test_timeout_parameter(self, mock_post, client):
+    def test_timeout_parameter(self, mock_post: Mock, client: ScraperClient):
         """Test that timeout parameter is passed correctly"""
         mock_response = Mock()
         mock_response.json.return_value = {
