@@ -9,6 +9,13 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env') })
 
 type ReasoningEffort = 'medium' | 'high';
 
+interface ScrapeConfig {
+  temperature?: number;
+  prompt?: string;
+  reasoning_effort?: ReasoningEffort;
+  top_p?: number;
+}
+
 export class ScraperClient {
   private baseUrl: string;
   private client: AxiosInstance;
@@ -29,11 +36,8 @@ export class ScraperClient {
   async scrape<T>(
     url: string, 
     schema: ZodSchema<T>, 
-    timeout: number = Number(process.env.DEFAULT_TIMEOUT),
-    reasoning_effort?: ReasoningEffort,
-    prompt?: string,
-    top_p?: number,
-    temperature?: number
+    config: ScrapeConfig = {},
+    timeout: number = Number(process.env.DEFAULT_TIMEOUT)
   ): Promise<T> {
     try {
       // Convert Zod schema to JSON schema using the library
@@ -44,18 +48,18 @@ export class ScraperClient {
         schema: jsonSchema,
       };
 
-      // Add optional parameters to payload if provided
-      if (reasoning_effort !== undefined) {
-        payload.reasoning_effort = reasoning_effort;
+      // Add optional parameters to payload if provided in config
+      if (config.reasoning_effort !== undefined) {
+        payload.reasoning_effort = config.reasoning_effort;
       }
-      if (prompt !== undefined) {
-        payload.prompt = prompt;
+      if (config.prompt !== undefined) {
+        payload.prompt = config.prompt;
       }
-      if (top_p !== undefined) {
-        payload.top_p = top_p;
+      if (config.top_p !== undefined) {
+        payload.top_p = config.top_p;
       }
-      if (temperature !== undefined) {
-        payload.temperature = temperature;
+      if (config.temperature !== undefined) {
+        payload.temperature = config.temperature;
       }
 
       const response: AxiosResponse = await this.client.post('/scrape', payload, {

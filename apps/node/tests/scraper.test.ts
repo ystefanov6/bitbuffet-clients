@@ -129,23 +129,25 @@ describe('ScraperClient', () => {
   });
 
   describe('Parameter Validation Tests', () => {
-    test('should include new parameters in API payload when provided', async () => {
+    test('should include new parameters in API payload when provided in config', async () => {
       // Setup mock response
       const mockResponse: Partial<AxiosResponse> = {
         data: mockRecipeResponse
       };
       mockAxiosInstance.post.mockResolvedValue(mockResponse);
 
-      // Test with all new parameters
+      // Test with all new parameters in config
       const url = 'https://www.recipetineats.com/butter-chicken/';
       await client.scrape(
         url,
         RecipeSchema,
-        60000,
-        'high',
-        'Focus on extracting detailed cooking instructions',
-        0.9,
-        1.5
+        {
+          reasoning_effort: 'high',
+          prompt: 'Focus on extracting detailed cooking instructions',
+          top_p: 0.9,
+          temperature: 1.5
+        },
+        60000
       );
 
       // Verify API call includes all parameters
@@ -163,16 +165,16 @@ describe('ScraperClient', () => {
       );
     });
 
-    test('should not include optional parameters when not provided', async () => {
+    test('should not include optional parameters when config is empty', async () => {
       // Setup mock response
       const mockResponse: Partial<AxiosResponse> = {
         data: mockArticleResponse
       };
       mockAxiosInstance.post.mockResolvedValue(mockResponse);
 
-      // Test with minimal parameters
+      // Test with empty config
       const url = 'https://www.bbc.co.uk/news/articles/clyrev00lwno';
-      await client.scrape(url, ArticleSchema);
+      await client.scrape(url, ArticleSchema, {});
 
       // Verify API call excludes optional parameters
       const callArgs = mockAxiosInstance.post.mock.calls[0];
@@ -188,7 +190,7 @@ describe('ScraperClient', () => {
       expect(payload).not.toHaveProperty('temperature');
     });
 
-    test('should accept valid reasoning_effort values', async () => {
+    test('should accept valid reasoning_effort values in config', async () => {
       // Setup mock response
       const mockResponse: Partial<AxiosResponse> = {
         data: mockRecipeResponse
@@ -201,8 +203,7 @@ describe('ScraperClient', () => {
         await client.scrape(
           'https://example.com',
           RecipeSchema,
-          undefined,
-          effort
+          { reasoning_effort: effort }
         );
 
         const callArgs = mockAxiosInstance.post.mock.calls[mockAxiosInstance.post.mock.calls.length - 1];
@@ -211,7 +212,7 @@ describe('ScraperClient', () => {
       }
     });
 
-    test('should accept numeric temperature values', async () => {
+    test('should accept numeric temperature values in config', async () => {
       // Setup mock response
       const mockResponse: Partial<AxiosResponse> = {
         data: mockRecipeResponse
@@ -222,11 +223,7 @@ describe('ScraperClient', () => {
       await client.scrape(
         'https://example.com',
         RecipeSchema,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        1
+        { temperature: 1 }
       );
 
       let callArgs = mockAxiosInstance.post.mock.calls[mockAxiosInstance.post.mock.calls.length - 1];
@@ -237,11 +234,7 @@ describe('ScraperClient', () => {
       await client.scrape(
         'https://example.com',
         RecipeSchema,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        1.5
+        { temperature: 1.5 }
       );
 
       callArgs = mockAxiosInstance.post.mock.calls[mockAxiosInstance.post.mock.calls.length - 1];
@@ -249,7 +242,7 @@ describe('ScraperClient', () => {
       expect(payload.temperature).toBe(1.5);
     });
 
-    test('should accept numeric top_p values', async () => {
+    test('should accept numeric top_p values in config', async () => {
       // Setup mock response
       const mockResponse: Partial<AxiosResponse> = {
         data: mockRecipeResponse
@@ -260,10 +253,7 @@ describe('ScraperClient', () => {
       await client.scrape(
         'https://example.com',
         RecipeSchema,
-        undefined,
-        undefined,
-        undefined,
-        0.9
+        { top_p: 0.9 }
       );
 
       let callArgs = mockAxiosInstance.post.mock.calls[mockAxiosInstance.post.mock.calls.length - 1];
@@ -274,10 +264,7 @@ describe('ScraperClient', () => {
       await client.scrape(
         'https://example.com',
         RecipeSchema,
-        undefined,
-        undefined,
-        undefined,
-        1
+        { top_p: 1 }
       );
 
       callArgs = mockAxiosInstance.post.mock.calls[mockAxiosInstance.post.mock.calls.length - 1];
@@ -287,7 +274,7 @@ describe('ScraperClient', () => {
   });
 
   describe('Successful Scraping', () => {
-    test('should successfully scrape recipe with all parameters', async () => {
+    test('should successfully scrape recipe with all parameters in config', async () => {
       // Setup mock response
       const mockResponse: Partial<AxiosResponse> = {
         data: mockRecipeResponse
@@ -299,11 +286,13 @@ describe('ScraperClient', () => {
       const result = await client.scrape(
         url,
         RecipeSchema,
-        60000,
-        'high',
-        'Focus on extracting detailed cooking instructions',
-        0.9,
-        1.5
+        {
+          reasoning_effort: 'high',
+          prompt: 'Focus on extracting detailed cooking instructions',
+          top_p: 0.9,
+          temperature: 1.5
+        },
+        60000
       );
 
       // Assertions

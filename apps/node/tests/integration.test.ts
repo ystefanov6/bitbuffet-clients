@@ -5,11 +5,11 @@ import { ArticleSchema } from '../src/schemas/article';
 
 describe('Integration Tests', () => {
   describe('Real API Calls', () => {
-    test('should scrape real recipe URL with reasoning effort', async () => {
+    test('should scrape real recipe URL with config', async () => {
       const client = new ScraperClient();
       const url = 'https://www.recipetineats.com/butter-chicken/';
       
-      const result = await client.scrape(url, RecipeSchema, 60000);
+      const result = await client.scrape(url, RecipeSchema, {}, 60000);
       
       expect(result).toEqual(expect.objectContaining({
         title: expect.any(String),
@@ -17,6 +17,7 @@ describe('Integration Tests', () => {
       }));
       expect(result.steps.length).toBeGreaterThan(0);
     }, 60000);
+
     test('should scrape real article URL with minimal parameters', async () => {
       const client = new ScraperClient();
       const url = 'https://www.bbc.co.uk/news/articles/clyrev00lwno';
@@ -30,18 +31,20 @@ describe('Integration Tests', () => {
       }));
     });
 
-    test('should scrape recipe with all new parameters', async () => {
+    test('should scrape recipe with all config parameters', async () => {
       const client = new ScraperClient();
       const url = 'https://www.recipetineats.com/butter-chicken/';
       
       const result = await client.scrape(
         url, 
         RecipeSchema, 
-        60000, 
-        'high',
-        'Focus on extracting detailed ingredient measurements and cooking times',
-        0.9,
-        1.2
+        {
+          reasoning_effort: 'high',
+          prompt: 'Focus on extracting detailed ingredient measurements and cooking times',
+          top_p: 0.9,
+          temperature: 1.2
+        },
+        60000
       );
       
       expect(result).toEqual(expect.objectContaining({
@@ -52,16 +55,18 @@ describe('Integration Tests', () => {
       expect(result.time.total).toBeGreaterThan(0);
     }, 60000);
 
-    test('should scrape article with reasoning effort and prompt', async () => {
+    test('should scrape article with reasoning effort and prompt in config', async () => {
       const client = new ScraperClient();
       const url = 'https://www.bbc.co.uk/news/articles/clyrev00lwno';
       
       const result = await client.scrape(
         url, 
         ArticleSchema, 
-        45000,
-        'high',
-        'Extract the most important quotes and ensure accuracy'
+        {
+          reasoning_effort: 'high',
+          prompt: 'Extract the most important quotes and ensure accuracy'
+        },
+        45000
       );
       
       expect(result).toEqual(expect.objectContaining({
@@ -72,7 +77,7 @@ describe('Integration Tests', () => {
       expect(Array.isArray(result.important_quotes)).toBe(true);
     }, 60000);
 
-    test('should handle different temperature values', async () => {
+    test('should handle different temperature values in config', async () => {
       const client = new ScraperClient();
       const url = 'https://www.recipetineats.com/butter-chicken/';
       
@@ -80,11 +85,11 @@ describe('Integration Tests', () => {
       const resultLow = await client.scrape(
         url, 
         RecipeSchema, 
-        60000,
-        'medium',
-        undefined,
-        undefined,
-        0.1
+        {
+          reasoning_effort: 'medium',
+          temperature: 0.1
+        },
+        60000
       );
       
       expect(resultLow).toEqual(expect.objectContaining({
@@ -95,11 +100,11 @@ describe('Integration Tests', () => {
       const resultHigh = await client.scrape(
         'https://www.bbc.com/news/articles/clyrev00lwno',
         ArticleSchema,
-        60000,
-        'medium',
-        undefined,
-        undefined,
-        1.5
+        {
+          reasoning_effort: 'medium',
+          temperature: 1.5
+        },
+        60000
       );
       
       expect(resultHigh).toEqual(expect.objectContaining({
@@ -108,18 +113,19 @@ describe('Integration Tests', () => {
       }));
     }, 60000);
 
-    test('should handle top_p parameter', async () => {
+    test('should handle top_p parameter in config', async () => {
       const client = new ScraperClient();
       const url = 'https://www.bbc.co.uk/news/articles/clyrev00lwno';
       
       const result = await client.scrape(
         url, 
         ArticleSchema, 
-        45000,
-        'medium',
-        undefined,
-        0.8,
-        1.0
+        {
+          reasoning_effort: 'medium',
+          top_p: 0.8,
+          temperature: 1.0
+        },
+        45000
       );
       
       expect(result).toEqual(expect.objectContaining({
@@ -129,15 +135,15 @@ describe('Integration Tests', () => {
       }));
     }, 60000);
 
-    test('should work with only reasoning effort parameter', async () => {
+    test('should work with only reasoning effort parameter in config', async () => {
       const client = new ScraperClient();
       const url = 'https://www.recipetineats.com/butter-chicken/';
       
       const result = await client.scrape(
         url, 
         RecipeSchema, 
-        60000,
-        'high'
+        { reasoning_effort: 'high' },
+        60000
       );
       
       expect(result).toEqual(expect.objectContaining({
