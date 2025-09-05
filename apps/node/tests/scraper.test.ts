@@ -145,7 +145,7 @@ describe('ScraperClient', () => {
           reasoning_effort: 'high',
           prompt: 'Focus on extracting detailed cooking instructions',
           top_p: 0.9,
-          temperature: 1.5
+          // temperature: 1.5
         },
         60000
       );
@@ -159,7 +159,7 @@ describe('ScraperClient', () => {
           reasoning_effort: 'high',
           prompt: 'Focus on extracting detailed cooking instructions',
           top_p: 0.9,
-          temperature: 1.5
+          // temperature: 1.5 - API validates if both top_p and temp are present
         },
         { timeout: 60000 }
       );
@@ -300,7 +300,7 @@ describe('ScraperClient', () => {
         {
           reasoning_effort: 'high',
           prompt: 'Focus on extracting detailed cooking instructions',
-          top_p: 0.9,
+          // top_p: 0.9, - API validates if both top_p and temp are present
           temperature: 1.5
         },
         60000
@@ -324,7 +324,7 @@ describe('ScraperClient', () => {
           schema: expect.any(Object),
           reasoning_effort: 'high',
           prompt: 'Focus on extracting detailed cooking instructions',
-          top_p: 0.9,
+          // top_p: 0.9, - API validates if both top_p and temp are present
           temperature: 1.5
         },
         { timeout: 60000 }

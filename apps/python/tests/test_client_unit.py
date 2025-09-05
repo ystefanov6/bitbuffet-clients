@@ -135,7 +135,7 @@ class TestScraperClient:
             RecipeSchema,
             reasoning_effort="high",
             prompt="Custom prompt",
-            top_p=0.9,
+            # top_p=0.9, - API validates if both top_p and temp are present 
             temperature=1.5
         )
         
@@ -145,7 +145,6 @@ class TestScraperClient:
         
         assert payload['reasoning_effort'] == "high"
         assert payload['prompt'] == "Custom prompt"
-        assert payload['top_p'] == 0.9
         assert payload['temperature'] == 1.5
         assert 'url' in payload
         assert 'schema' in payload
@@ -255,9 +254,9 @@ class TestScraperClient:
         assert payload['top_p'] == 1
 
     @patch('src.scraper.requests.Session.post')
-    def test_temperature_and_top_p_validation_error(self, client: ScraperClient):
+    def test_temperature_and_top_p_validation_error(self, mock_post: Mock, client: ScraperClient):
         """Test that providing both temperature and top_p raises ValueError"""
-        with pytest.raises(ValueError, match="Cannot specify both 'temperature' and 'top_p' parameters"):
+        with pytest.raises(ValueError, match="Cannot specify both 'temperature' and 'top_p' parameters. Please use only one."):
             client.scrape(
                 "https://example.com", 
                 RecipeSchema,

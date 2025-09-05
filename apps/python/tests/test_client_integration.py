@@ -119,7 +119,6 @@ class TestIntegration:
             ArticleSchema, 
             reasoning_effort="medium",
             top_p=0.8,
-            temperature=1.0
         )
         
         assert isinstance(result, ArticleSchema)
