@@ -41,7 +41,6 @@ describe('Integration Tests', () => {
         {
           reasoning_effort: 'high',
           prompt: 'Focus on extracting detailed ingredient measurements and cooking times',
-          top_p: 0.9,
           temperature: 1.0
         },
         60000

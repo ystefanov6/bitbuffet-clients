@@ -291,7 +291,7 @@ describe('ScraperClient', () => {
         data: mockRecipeResponse
       };
       mockAxiosInstance.post.mockResolvedValue(mockResponse);
-
+    
       // Test scraping
       const url = 'https://www.recipetineats.com/butter-chicken/';
       const result = await client.scrape(
@@ -300,11 +300,11 @@ describe('ScraperClient', () => {
         {
           reasoning_effort: 'high',
           prompt: 'Focus on extracting detailed cooking instructions',
-          temperature: 1.2
+          temperature: 1.2  // Keep this as 1.2
         },
         60000
       );
-
+    
       // Assertions
       expect(result).toEqual(expect.objectContaining({
         title: 'Butter Chicken',
@@ -314,17 +314,16 @@ describe('ScraperClient', () => {
       expect(result.time.total).toBe(45);
       expect(result.ingredient_groups).toHaveLength(1);
       expect(result.rating.rating).toBe(4.5);
-
-      // Verify API call
+    
+      // Verify API call - Fix the expected values
       expect(mockAxiosInstance.post).toHaveBeenCalledWith(
         '/scrape',
         {
           url,
-          schema: expect.any(Object),
+          schema: expect.any(Object),  // This is correct
           reasoning_effort: 'high',
           prompt: 'Focus on extracting detailed cooking instructions',
-          // top_p: 0.9, - API validates if both top_p and temp are present
-          temperature: 1.5
+          temperature: 1.2  // Change from 1.5 to 1.2 to match the actual call
         },
         { timeout: 60000 }
       );

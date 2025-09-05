@@ -89,21 +89,19 @@ class TestIntegration:
         # Test with low temperature (more deterministic)
         result_low = client.scrape(
             url, 
-            RecipeSchema, 
-            reasoning_effort="medium",
+            ArticleSchema, 
             temperature=0.1
         )
         
         # Test with high temperature (more creative)
         result_high = client.scrape(
             url, 
-            RecipeSchema, 
-            reasoning_effort="medium",
+            ArticleSchema, 
             temperature=1
         )
         
-        assert isinstance(result_low, RecipeSchema)
-        assert isinstance(result_high, RecipeSchema)
+        assert isinstance(result_low, ArticleSchema)
+        assert isinstance(result_high, ArticleSchema)
         assert result_low.title
         assert result_high.title
     
