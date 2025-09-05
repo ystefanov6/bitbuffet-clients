@@ -13,13 +13,13 @@ class Time(BaseModel):
 
 class Metric(BaseModel):
     amount: Optional[float] = Field(None, description="Amount in metric units. Convert to number ALWAYS. If string is '1-2' - go in between (1.5).", json_schema_extra={'example': {'amount': 1.5}})
-    unitShort: str
-    unitLong: str
+    unitShort: Optional[str] = None
+    unitLong: Optional[str] = None
 
 class Imperial(BaseModel):
     amount: Optional[float] = Field(None, description="Amount in imperial units. Convert to number ALWAYS. If string is '1-2' - go in between (1.5).", json_schema_extra={'example': {'amount': 1.5}})
-    unitShort: str
-    unitLong: str
+    unitShort: Optional[str] = None
+    unitLong: Optional[str] = None
 
 class Measures(BaseModel):
     metric: Metric
@@ -33,25 +33,8 @@ class Ingredients(BaseModel):
 
 
 class IngredientGroups(BaseModel):
-    purpose: str
+    purpose: str = 'None'
     ingredients: list[Ingredients]
-
-class Nutrient(BaseModel):
-    unit: str
-    value: int
-
-class Nutrients(BaseModel):
-    calories: Nutrient
-    protein: Nutrient
-    fat: Nutrient
-    carbs: Nutrient
-    sugar: Nutrient
-    fiber: Nutrient
-    sodium: Nutrient
-
-class Nutrition(BaseModel):
-    calories: int
-    nutrients: Nutrients
 
 class RecipeSchema(BaseModel):
     title: str
@@ -65,7 +48,7 @@ class RecipeSchema(BaseModel):
     ingredient_groups: list[IngredientGroups]
     steps: list[str]
     servings: int
-    additional_notes: str
+    additional_notes: Optional[str] = None
     rating: Rating
     locale: str
     # nutrition: Nutrition

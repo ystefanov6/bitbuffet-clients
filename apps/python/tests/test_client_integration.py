@@ -1,5 +1,5 @@
 """
-Test suite for the Python Structured Scraper Client SDK for Mock Unit Tests
+Test suite for the Python Structured Scraper Client SDK for Integration Tests
 """
 
 import pytest
@@ -18,7 +18,7 @@ class TestIntegration:
         client = ScraperClient()
         url = "https://www.recipetineats.com/butter-chicken/"
         
-        result = client.scrape(url, RecipeSchema, method="fast")
+        result = client.scrape(url, RecipeSchema, reasoning_effort="medium")
         
         assert isinstance(result, RecipeSchema)
         assert result.title
@@ -33,6 +33,96 @@ class TestIntegration:
         url = "https://www.bbc.co.uk/news/articles/clyrev00lwno"
         
         result = client.scrape(url, ArticleSchema)
+        
+        assert isinstance(result, ArticleSchema)
+        assert result.title
+        assert result.content
+        assert result.author
+    
+    @pytest.mark.integration
+    @pytest.mark.skip(reason="Requires actual API endpoint and may be slow")
+    def test_real_recipe_scraping_with_all_params(self):
+        """Integration test with all new parameters"""
+        client = ScraperClient()
+        url = "https://www.recipetineats.com/butter-chicken/"
+        
+        result = client.scrape(
+            url, 
+            RecipeSchema, 
+            reasoning_effort="high",
+            prompt="Focus on extracting detailed ingredient measurements and cooking times",
+            top_p=0.9,
+            temperature=1.2
+        )
+        
+        assert isinstance(result, RecipeSchema)
+        assert result.title
+        assert result.author
+        assert len(result.steps) > 0
+        assert result.time.total > 0
+    
+    @pytest.mark.integration
+    @pytest.mark.skip(reason="Requires actual API endpoint and may be slow")
+    def test_real_article_scraping_with_reasoning_effort(self):
+        """Integration test with reasoning effort parameter"""
+        client = ScraperClient()
+        url = "https://www.bbc.co.uk/news/articles/clyrev00lwno"
+        
+        result = client.scrape(
+            url, 
+            ArticleSchema, 
+            reasoning_effort="high",
+            prompt="Extract the most important quotes and ensure accuracy"
+        )
+        
+        assert isinstance(result, ArticleSchema)
+        assert result.title
+        assert result.content
+        assert result.author
+        assert len(result.important_quotes) >= 0
+    
+    @pytest.mark.integration
+    @pytest.mark.skip(reason="Requires actual API endpoint and may be slow")
+    def test_temperature_parameter_integration(self):
+        """Integration test with different temperature values"""
+        client = ScraperClient()
+        url = "https://www.recipetineats.com/butter-chicken/"
+        
+        # Test with low temperature (more deterministic)
+        result_low = client.scrape(
+            url, 
+            RecipeSchema, 
+            reasoning_effort="medium",
+            temperature=0.1
+        )
+        
+        # Test with high temperature (more creative)
+        result_high = client.scrape(
+            url, 
+            RecipeSchema, 
+            reasoning_effort="medium",
+            temperature=1
+        )
+        
+        assert isinstance(result_low, RecipeSchema)
+        assert isinstance(result_high, RecipeSchema)
+        assert result_low.title
+        assert result_high.title
+    
+    @pytest.mark.integration
+    @pytest.mark.skip(reason="Requires actual API endpoint and may be slow")
+    def test_top_p_parameter_integration(self):
+        """Integration test with top_p parameter"""
+        client = ScraperClient()
+        url = "https://www.bbc.co.uk/news/articles/clyrev00lwno"
+        
+        result = client.scrape(
+            url, 
+            ArticleSchema, 
+            reasoning_effort="medium",
+            top_p=0.8,
+            temperature=1.0
+        )
         
         assert isinstance(result, ArticleSchema)
         assert result.title

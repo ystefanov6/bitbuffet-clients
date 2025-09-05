@@ -7,7 +7,7 @@ import path from 'path'
 // Configure dotenv to look for .env file in the root directory
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') })
 
-type ScrapingMethod = 'fast' | 'balanced' | 'thorough';
+type ReasoningEffort = 'medium' | 'high';
 
 export class ScraperClient {
   private baseUrl: string;
@@ -30,8 +30,10 @@ export class ScraperClient {
     url: string, 
     schema: ZodSchema<T>, 
     timeout: number = Number(process.env.DEFAULT_TIMEOUT),
-    method: ScrapingMethod = 'fast',
-    prompt?: string
+    reasoning_effort?: ReasoningEffort,
+    prompt?: string,
+    top_p?: number,
+    temperature?: number
   ): Promise<T> {
     try {
       // Convert Zod schema to JSON schema using the library
@@ -40,12 +42,20 @@ export class ScraperClient {
       const payload: any = {
         url,
         schema: jsonSchema,
-        method,
       };
 
-      // Add prompt to payload if provided
+      // Add optional parameters to payload if provided
+      if (reasoning_effort !== undefined) {
+        payload.reasoning_effort = reasoning_effort;
+      }
       if (prompt !== undefined) {
         payload.prompt = prompt;
+      }
+      if (top_p !== undefined) {
+        payload.top_p = top_p;
+      }
+      if (temperature !== undefined) {
+        payload.temperature = temperature;
       }
 
       const response: AxiosResponse = await this.client.post('/scrape', payload, {

@@ -13,14 +13,14 @@ const TimeSchema = z.object({
 
 const MetricSchema = z.object({
   amount: z.number().nullish().describe("Amount in metric units. Convert to number ALWAYS. If string is '1-2' - go in between (1.5)."),
-  unitShort: z.string(),
-  unitLong: z.string(),
+  unitShort: z.string().nullish(),
+  unitLong: z.string().nullish(),
 });
 
 const ImperialSchema = z.object({
   amount: z.number().nullish().describe("Amount in imperial units. Convert to number ALWAYS. If string is '1-2' - go in between (1.5)."),
-  unitShort: z.string(),
-  unitLong: z.string(),
+  unitShort: z.string().nullish(),
+  unitLong: z.string().nullish(),
 });
 
 const MeasuresSchema = z.object({
@@ -36,28 +36,8 @@ const IngredientsSchema = z.object({
 });
 
 const IngredientGroupsSchema = z.object({
-  purpose: z.string(),
+  purpose: z.string().default('None'),
   ingredients: z.array(IngredientsSchema),
-});
-
-const NutrientSchema = z.object({
-  unit: z.string(),
-  value: z.number(),
-});
-
-const NutrientsSchema = z.object({
-  calories: NutrientSchema,
-  protein: NutrientSchema,
-  fat: NutrientSchema,
-  carbs: NutrientSchema,
-  sugar: NutrientSchema,
-  fiber: NutrientSchema,
-  sodium: NutrientSchema,
-});
-
-const NutritionSchema = z.object({
-  calories: z.number(),
-  nutrients: NutrientsSchema,
 });
 
 export const RecipeSchema = z.object({
@@ -72,7 +52,7 @@ export const RecipeSchema = z.object({
   ingredient_groups: z.array(IngredientGroupsSchema),
   steps: z.array(z.string()),
   servings: z.number(),
-  additional_notes: z.string(),
+  additional_notes: z.string().nullish(),
   rating: RatingSchema,
   locale: z.string(),
   // nutrition: NutritionSchema, // Commented out like in Python version

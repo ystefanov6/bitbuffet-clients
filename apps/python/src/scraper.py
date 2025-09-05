@@ -1,5 +1,5 @@
 import requests
-from typing import Dict, Any, Type, Optional, Literal, TypeVar
+from typing import Dict, Any, Type, Optional, Literal, TypeVar, Union
 import json
 from pydantic import BaseModel
 import os
@@ -12,7 +12,7 @@ T = TypeVar('T', bound=BaseModel)
 
 class ScraperClient:
     """Python SDK for the Structured Scraper API"""
-    base_url = f"{os.getenv("BASE_API_URL")}:{os.getenv("BASE_API_PORT")}"
+    base_url = f"{os.getenv('BASE_API_URL')}:{os.getenv('BASE_API_PORT')}"
     
     def __init__(self, base_url: str = base_url):
         self.base_url = base_url.rstrip('/')
@@ -44,9 +44,11 @@ class ScraperClient:
         self, 
         url: str, 
         schema_class: Type[T], 
-        timeout: int = int(os.getenv("DEFAULT_TIMEOUT"))/1000,
-        method: Literal["fast", "balanced", "thorough"] = "fast",
-        prompt: Optional[str] = None
+        timeout: int = int(os.getenv('DEFAULT_TIMEOUT'))/1000,
+        reasoning_effort: Optional[Literal['medium', 'high']] = None,
+        prompt: Optional[str] = None,
+        top_p: Optional[Union[int, float]] = None,
+        temperature: Optional[Union[int, float]] = None
     ) -> T:
         """
         Scrape a webpage and return a validated Pydantic model instance.
@@ -55,8 +57,10 @@ class ScraperClient:
             url: The URL to scrape
             schema_class: Pydantic BaseModel class to validate against
             timeout: Request timeout in seconds
-            method: Scraping method - "fast", "balanced", or "thorough"
+            reasoning_effort: Reasoning effort level ('medium' or 'high')
             prompt: Additional custom prompt for extra configurability
+            top_p: Top-p sampling parameter for the AI model
+            temperature: Temperature parameter for the AI model (0-2)
             
         Returns:
             Validated Pydantic model instance of the same type as schema_class
@@ -70,13 +74,18 @@ class ScraperClient:
         
         payload = {
             "url": url,
-            "schema": schema,
-            "method": method
+            "schema": schema
         }
         
-        # Add prompt to payload if provided
+        # Add optional parameters to payload if provided
+        if reasoning_effort is not None:
+            payload["reasoning_effort"] = reasoning_effort
         if prompt is not None:
             payload["prompt"] = prompt
+        if top_p is not None:
+            payload["top_p"] = top_p
+        if temperature is not None:
+            payload["temperature"] = temperature
         
         try:
             response = self.session.post(
