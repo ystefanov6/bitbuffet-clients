@@ -271,6 +271,17 @@ describe('ScraperClient', () => {
       payload = callArgs[1];
       expect(payload.top_p).toBe(1);
     });
+
+    test('should throw error when both temperature and top_p are provided in config', async () => {
+      await expect(client.scrape(
+        'https://example.com',
+        RecipeSchema,
+        {
+          temperature: 1.0,
+          top_p: 0.9
+        }
+      )).rejects.toThrow("Cannot specify both 'temperature' and 'top_p' parameters. Please use only one.");
+    });
   });
 
   describe('Successful Scraping', () => {

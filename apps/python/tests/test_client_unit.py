@@ -255,6 +255,17 @@ class TestScraperClient:
         assert payload['top_p'] == 1
 
     @patch('src.scraper.requests.Session.post')
+    def test_temperature_and_top_p_validation_error(self, client: ScraperClient):
+        """Test that providing both temperature and top_p raises ValueError"""
+        with pytest.raises(ValueError, match="Cannot specify both 'temperature' and 'top_p' parameters"):
+            client.scrape(
+                "https://example.com", 
+                RecipeSchema,
+                temperature=1.0,
+                top_p=0.9
+            )
+
+    @patch('src.scraper.requests.Session.post')
     def test_successful_recipe_scraping(self, mock_post: Mock, client: ScraperClient, mock_recipe_response):
         """Test successful recipe scraping with mock response"""
         # Setup mock response

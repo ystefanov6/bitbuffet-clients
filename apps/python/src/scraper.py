@@ -67,8 +67,12 @@ class ScraperClient:
             
         Raises:
             requests.RequestException: If the API request fails
-            ValueError: If the response is invalid
+            ValueError: If the response is invalid or both temperature and top_p are provided
         """
+        # Validate that both temperature and top_p are not provided simultaneously
+        if temperature is not None and top_p is not None:
+            raise ValueError("Cannot specify both 'temperature' and 'top_p' parameters. Please use only one.")
+        
         # Convert Pydantic schema to JSON schema
         schema = self._pydantic_to_json_schema(schema_class)
         

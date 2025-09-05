@@ -40,6 +40,11 @@ export class ScraperClient {
     timeout: number = Number(process.env.DEFAULT_TIMEOUT)
   ): Promise<T> {
     try {
+      // Validate that both temperature and top_p are not provided simultaneously
+      if (config.temperature !== undefined && config.top_p !== undefined) {
+        throw new Error("Cannot specify both 'temperature' and 'top_p' parameters. Please use only one.");
+      }
+      
       // Convert Zod schema to JSON schema using the library
       const jsonSchema = zodToJsonSchema(schema);
       

@@ -50,9 +50,7 @@ class TestIntegration:
             url, 
             RecipeSchema, 
             reasoning_effort="high",
-            prompt="Focus on extracting detailed ingredient measurements and cooking times",
-            top_p=0.9,
-            temperature=1.2
+            prompt="Focus on extracting detailed ingredient measurements and cooking times"
         )
         
         assert isinstance(result, RecipeSchema)
