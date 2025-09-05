@@ -234,12 +234,12 @@ describe('ScraperClient', () => {
       await client.scrape(
         'https://example.com',
         RecipeSchema,
-        { temperature: 1.5 }
+        { temperature: 1.2 }
       );
 
       callArgs = mockAxiosInstance.post.mock.calls[mockAxiosInstance.post.mock.calls.length - 1];
       payload = callArgs[1];
-      expect(payload.temperature).toBe(1.5);
+      expect(payload.temperature).toBe(1.2);
     });
 
     test('should accept numeric top_p values in config', async () => {
@@ -295,13 +295,12 @@ describe('ScraperClient', () => {
       // Test scraping
       const url = 'https://www.recipetineats.com/butter-chicken/';
       const result = await client.scrape(
-        url,
-        RecipeSchema,
+        url, 
+        RecipeSchema, 
         {
           reasoning_effort: 'high',
           prompt: 'Focus on extracting detailed cooking instructions',
-          // top_p: 0.9, - API validates if both top_p and temp are present
-          temperature: 1.5
+          temperature: 1.2
         },
         60000
       );

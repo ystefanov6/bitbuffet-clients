@@ -60,7 +60,7 @@ class ScraperClient:
             reasoning_effort: Reasoning effort level ('medium' or 'high')
             prompt: Additional custom prompt for extra configurability
             top_p: Top-p sampling parameter for the AI model
-            temperature: Temperature parameter for the AI model (0-2)
+            temperature: Temperature parameter for the AI model (0-1.5)
             
         Returns:
             Validated Pydantic model instance of the same type as schema_class

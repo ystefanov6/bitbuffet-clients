@@ -41,7 +41,8 @@ describe('Integration Tests', () => {
         {
           reasoning_effort: 'high',
           prompt: 'Focus on extracting detailed ingredient measurements and cooking times',
-          temperature: 1.2
+          top_p: 0.9,
+          temperature: 1.0
         },
         60000
       );
@@ -101,7 +102,7 @@ describe('Integration Tests', () => {
         ArticleSchema,
         {
           reasoning_effort: 'medium',
-          temperature: 1.5
+          temperature: 1.2
         },
         60000
       );

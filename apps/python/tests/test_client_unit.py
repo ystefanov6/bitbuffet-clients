@@ -136,7 +136,7 @@ class TestScraperClient:
             reasoning_effort="high",
             prompt="Custom prompt",
             # top_p=0.9, - API validates if both top_p and temp are present 
-            temperature=1.5
+            temperature=1.2
         )
         
         # Verify the API call was made with correct parameters
@@ -145,7 +145,7 @@ class TestScraperClient:
         
         assert payload['reasoning_effort'] == "high"
         assert payload['prompt'] == "Custom prompt"
-        assert payload['temperature'] == 1.5
+        assert payload['temperature'] == 1.2
         assert 'url' in payload
         assert 'schema' in payload
 
@@ -211,6 +211,17 @@ class TestScraperClient:
         call_args = mock_post.call_args
         payload = call_args[1]['json']
         assert payload['temperature'] == 1
+        
+        # Test with float temperature
+        client.scrape(
+            "https://example.com", 
+            RecipeSchema,
+            temperature=1.2
+        )
+        
+        call_args = mock_post.call_args
+        payload = call_args[1]['json']
+        assert payload['temperature'] == 1.2
         
         # Test with float temperature
         client.scrape(
