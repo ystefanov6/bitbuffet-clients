@@ -3,7 +3,7 @@
  **/
 
 import axios, { AxiosResponse } from 'axios';
-import { ScraperClient } from '../src/scraper';
+import { BitBuffet } from '../src/scraper';
 import { RecipeSchema } from '../src/schemas/recipe';
 import { ArticleSchema } from '../src/schemas/article';
 import { jest, describe, test, expect, beforeEach } from '@jest/globals';
@@ -12,8 +12,8 @@ import { jest, describe, test, expect, beforeEach } from '@jest/globals';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-describe('ScraperClient', () => {
-  let client: ScraperClient;
+describe('BitBuffet', () => {
+  let client: BitBuffet;
   let mockAxiosInstance: jest.Mocked<any>;
 
   // Mock data fixtures
@@ -90,38 +90,16 @@ describe('ScraperClient', () => {
     mockedAxios.create.mockReturnValue(mockAxiosInstance);
     
     // Create client instance
-    client = new ScraperClient(process.env.TEST_API_KEY as string);
+    client = new BitBuffet(process.env.TEST_API_KEY as string);
   });
 
   describe('Client Initialization', () => {
     test('should initialize with default base URL', () => {
-      expect(client).toBeInstanceOf(ScraperClient);
+      expect(client).toBeInstanceOf(BitBuffet);
       expect(mockedAxios.create).toHaveBeenCalledWith({
         baseURL: expect.any(String),
         headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-    });
-
-    test('should initialize with custom base URL', () => {
-      const customUrl = 'https://custom-api.example.com';
-      const testClient = new ScraperClient(customUrl);
-      expect(testClient).toBeInstanceOf(ScraperClient);
-      expect(mockedAxios.create).toHaveBeenCalledWith({
-        baseURL: customUrl,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-    });
-
-    test('should strip trailing slash from base URL', () => {
-      const urlWithSlash = 'https://api.example.com/';
-      const testClient = new ScraperClient(urlWithSlash);
-      expect(mockedAxios.create).toHaveBeenCalledWith({
-        baseURL: 'https://api.example.com',
-        headers: {
+          'Authorization': `Bearer ${process.env.TEST_API_KEY}`,
           'Content-Type': 'application/json'
         }
       });
@@ -155,7 +133,7 @@ describe('ScraperClient', () => {
         '/scrape',
         {
           url,
-          schema: expect.any(Object),
+          json_schema: expect.any(Object),
           reasoning_effort: 'high',
           prompt: 'Focus on extracting detailed cooking instructions',
           top_p: 0.9,
@@ -182,7 +160,7 @@ describe('ScraperClient', () => {
       
       expect(payload).toEqual({
         url,
-        schema: expect.any(Object)
+        json_schema: expect.any(Object)
       });
       expect(payload).not.toHaveProperty('reasoning_effort');
       expect(payload).not.toHaveProperty('prompt');
@@ -320,7 +298,7 @@ describe('ScraperClient', () => {
         '/scrape',
         {
           url,
-          schema: expect.any(Object),  // This is correct
+          json_schema: expect.any(Object),  // This is correct
           reasoning_effort: 'high',
           prompt: 'Focus on extracting detailed cooking instructions',
           temperature: 1.2  // Change from 1.5 to 1.2 to match the actual call
@@ -354,7 +332,7 @@ describe('ScraperClient', () => {
         '/scrape',
         {
           url,
-          schema: expect.any(Object)
+          json_schema: expect.any(Object)
         },
         { timeout: expect.any(Number) }
       );

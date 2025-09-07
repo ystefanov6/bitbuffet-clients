@@ -16,17 +16,15 @@ interface ScrapeConfig {
   top_p?: number;
 }
 
-export class ScraperClient {
+export class BitBuffet {
   private baseUrl: string;
   private client: AxiosInstance;
-  private apiKey: string;
 
   constructor(apiKey: string) {
     // Validate API key
     if (!apiKey || !apiKey.trim()) {
-      throw new Error('API key is required. Please provide a valid API key when initializing the ScraperClient.');
+      throw new Error('API key is required. Please provide a valid API key when initializing the BitBuffet.');
     }
-    this.apiKey = apiKey;
     this.baseUrl = `${process.env.BASE_API_URL}:${process.env.BASE_API_PORT}`;
     this.client = axios.create({
       baseURL: this.baseUrl,

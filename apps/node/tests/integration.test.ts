@@ -1,9 +1,9 @@
-import { ScraperClient } from '../src/scraper';
+import { BitBuffet } from '../src/scraper';
 import { RecipeSchema } from '../src/schemas/recipe';
 import { describe, test, expect } from '@jest/globals';
 import { ArticleSchema } from '../src/schemas/article';
 
-const client = new ScraperClient(process.env.TEST_API_KEY as string);
+const client = new BitBuffet(process.env.TEST_API_KEY as string);
 
 describe('Integration Tests', () => {
   describe('Real API Calls', () => {

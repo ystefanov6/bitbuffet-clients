@@ -4,12 +4,12 @@ Test suite for the Python Structured Scraper Client SDK for Integration Tests
 
 import pytest
 
-from src.scraper import ScraperClient
+from src.scraper import BitBuffet
 from tests.schemas.recipe_schema import RecipeSchema
 from tests.schemas.article_schema import ArticleSchema
 import os
 
-client = ScraperClient(os.getenv("TEST_API_KEY"))
+client = BitBuffet(os.getenv("TEST_API_KEY"))
 
 
 class TestIntegration:

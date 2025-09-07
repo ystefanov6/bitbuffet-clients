@@ -10,13 +10,13 @@ load_dotenv()
 # Define a TypeVar bound to BaseModel
 T = TypeVar('T', bound=BaseModel)
 
-class ScraperClient:
+class BitBuffet:
     """Python SDK for the Structured Scraper API"""
     
     def __init__(self, api_key: str):
         # Validate API key
         if not api_key or not api_key.strip():
-            raise ValueError('API key is required. Please provide a valid API key when initializing the ScraperClient.')
+            raise ValueError('API key is required. Please provide a valid API key when initializing the BitBuffet.')
         
         self.base_url = f"{os.getenv('BASE_API_URL')}:{os.getenv('BASE_API_PORT')}"
         self.session = requests.Session()
