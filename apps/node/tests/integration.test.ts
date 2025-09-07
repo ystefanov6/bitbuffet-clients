@@ -3,10 +3,11 @@ import { RecipeSchema } from '../src/schemas/recipe';
 import { describe, test, expect } from '@jest/globals';
 import { ArticleSchema } from '../src/schemas/article';
 
+const client = new ScraperClient(process.env.TEST_API_KEY as string);
+
 describe('Integration Tests', () => {
   describe('Real API Calls', () => {
     test('should scrape real recipe URL with config', async () => {
-      const client = new ScraperClient();
       const url = 'https://www.recipetineats.com/butter-chicken/';
       
       const result = await client.scrape(url, RecipeSchema, {}, 60000);
@@ -19,7 +20,6 @@ describe('Integration Tests', () => {
     }, 60000);
 
     test('should scrape real article URL with minimal parameters', async () => {
-      const client = new ScraperClient();
       const url = 'https://www.bbc.co.uk/news/articles/clyrev00lwno';
       
       const result = await client.scrape(url, ArticleSchema);
@@ -32,7 +32,6 @@ describe('Integration Tests', () => {
     });
 
     test('should scrape recipe with all config parameters', async () => {
-      const client = new ScraperClient();
       const url = 'https://www.recipetineats.com/butter-chicken/';
       
       const result = await client.scrape(
@@ -55,7 +54,6 @@ describe('Integration Tests', () => {
     }, 60000);
 
     test('should scrape article with reasoning effort and prompt in config', async () => {
-      const client = new ScraperClient();
       const url = 'https://www.bbc.co.uk/news/articles/clyrev00lwno';
       
       const result = await client.scrape(
@@ -77,7 +75,6 @@ describe('Integration Tests', () => {
     }, 60000);
 
     test('should handle different temperature values in config', async () => {
-      const client = new ScraperClient();
       const url = 'https://www.recipetineats.com/butter-chicken/';
       
       // Test with low temperature (more deterministic)
@@ -113,7 +110,6 @@ describe('Integration Tests', () => {
     }, 60000);
 
     test('should handle top_p parameter in config', async () => {
-      const client = new ScraperClient();
       const url = 'https://www.bbc.co.uk/news/articles/clyrev00lwno';
       
       const result = await client.scrape(
@@ -134,7 +130,6 @@ describe('Integration Tests', () => {
     }, 60000);
 
     test('should work with only reasoning effort parameter in config', async () => {
-      const client = new ScraperClient();
       const url = 'https://www.recipetineats.com/butter-chicken/';
       
       const result = await client.scrape(

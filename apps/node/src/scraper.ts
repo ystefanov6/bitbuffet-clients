@@ -19,12 +19,19 @@ interface ScrapeConfig {
 export class ScraperClient {
   private baseUrl: string;
   private client: AxiosInstance;
+  private apiKey: string;
 
-  constructor(baseUrl: string = `${process.env.BASE_API_URL}:${process.env.BASE_API_PORT}`) {
-    this.baseUrl = baseUrl.replace(/\/$/, '');
+  constructor(apiKey: string) {
+    // Validate API key
+    if (!apiKey || !apiKey.trim()) {
+      throw new Error('API key is required. Please provide a valid API key when initializing the ScraperClient.');
+    }
+    this.apiKey = apiKey;
+    this.baseUrl = `${process.env.BASE_API_URL}:${process.env.BASE_API_PORT}`;
     this.client = axios.create({
       baseURL: this.baseUrl,
       headers: {
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
     });
@@ -50,7 +57,7 @@ export class ScraperClient {
       
       const payload: any = {
         url,
-        schema: jsonSchema,
+        json_schema: jsonSchema,
       };
 
       // Add optional parameters to payload if provided in config

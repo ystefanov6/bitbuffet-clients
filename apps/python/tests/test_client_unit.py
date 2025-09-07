@@ -9,6 +9,9 @@ from unittest.mock import Mock, patch
 from src.scraper import ScraperClient
 from tests.schemas.recipe_schema import RecipeSchema
 from tests.schemas.article_schema import ArticleSchema
+import os
+
+client = ScraperClient(os.getenv("TEST_API_KEY"))
 
 class TestScraperClient:
     """Test cases for ScraperClient functionality"""
@@ -16,7 +19,7 @@ class TestScraperClient:
     @pytest.fixture
     def client(self):
         """Create a ScraperClient instance for testing"""
-        return ScraperClient()
+        return ScraperClient(os.getenv("TEST_API_KEY"))
     
     @pytest.fixture
     def mock_recipe_response(self):
@@ -91,7 +94,6 @@ class TestScraperClient:
 
     def test_client_initialization_default(self):
         """Test ScraperClient initialization with default parameters"""
-        client = ScraperClient()
         assert client.base_url is not None
         assert hasattr(client, 'session')
         assert isinstance(client.session, requests.Session)
@@ -99,14 +101,7 @@ class TestScraperClient:
     def test_client_initialization_custom_url(self):
         """Test ScraperClient initialization with custom URL"""
         custom_url = "https://custom-api.example.com"
-        client = ScraperClient(custom_url)
         assert client.base_url == custom_url
-
-    def test_client_initialization_strips_trailing_slash(self):
-        """Test that trailing slash is stripped from base URL"""
-        url_with_slash = "https://api.example.com/"
-        client = ScraperClient(url_with_slash)
-        assert client.base_url == "https://api.example.com"
 
     def test_pydantic_to_json_schema_conversion(self, client: ScraperClient):
         """Test conversion of Pydantic schema to JSON schema"""

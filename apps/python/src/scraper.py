@@ -12,11 +12,18 @@ T = TypeVar('T', bound=BaseModel)
 
 class ScraperClient:
     """Python SDK for the Structured Scraper API"""
-    base_url = f"{os.getenv('BASE_API_URL')}:{os.getenv('BASE_API_PORT')}"
     
-    def __init__(self, base_url: str = base_url):
-        self.base_url = base_url.rstrip('/')
+    def __init__(self, api_key: str):
+        # Validate API key
+        if not api_key or not api_key.strip():
+            raise ValueError('API key is required. Please provide a valid API key when initializing the ScraperClient.')
+        
+        self.base_url = f"{os.getenv('BASE_API_URL')}:{os.getenv('BASE_API_PORT')}"
         self.session = requests.Session()
+        self.session.headers.update({
+            'Authorization': f'Bearer {api_key}',
+            'Content-Type': 'application/json'
+        })
     
     def _pydantic_to_json_schema(self, schema_class: Type[BaseModel]) -> Dict[str, Any]:
         """Convert a Pydantic model to JSON schema format"""
@@ -78,7 +85,7 @@ class ScraperClient:
         
         payload = {
             "url": url,
-            "schema": schema
+            "json_schema": schema
         }
         
         # Add optional parameters to payload if provided

@@ -90,7 +90,7 @@ describe('ScraperClient', () => {
     mockedAxios.create.mockReturnValue(mockAxiosInstance);
     
     // Create client instance
-    client = new ScraperClient();
+    client = new ScraperClient(process.env.TEST_API_KEY as string);
   });
 
   describe('Client Initialization', () => {
