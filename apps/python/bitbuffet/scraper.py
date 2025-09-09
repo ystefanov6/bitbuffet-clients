@@ -100,7 +100,7 @@ class BitBuffet:
         
         try:
             response = self.session.post(
-                f"{self.base_url}/scrape",
+                f"{self.base_url}/extract",
                 json=payload,
                 timeout=timeout,
                 headers={"Content-Type": "application/json"}

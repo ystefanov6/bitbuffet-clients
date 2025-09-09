@@ -1,11 +1,17 @@
 {
-  "name": "structured-scraper-client",
+  "name": "@ystefanov6/bitbuffet-js",
   "version": "0.1.0",
-  "description": "TypeScript SDK for the Structured Scraper API",
+  "description": "TypeScript SDK for the Structured Scraper API - BitBuffet",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
+    "prepublishOnly": "npm run build",
     "dev": "ts-node src/index.ts",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -19,10 +25,24 @@
     "api",
     "client",
     "typescript",
-    "zod"
+    "zod",
+    "web-scraping",
+    "structured-data"
   ],
-  "author": "",
+  "author": "Yuliyan Stefanov <ystefanov.dev@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ystefanov6/bitbuffet-clients.git",
+    "directory": "apps/node"
+  },
+  "homepage": "https://github.com/ystefanov6/bitbuffet-clients#readme",
+  "bugs": {
+    "url": "https://github.com/ystefanov6/bitbuffet-clients/issues"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "dependencies": {
     "axios": "^1.6.2",
     "dotenv": "^17.2.2",

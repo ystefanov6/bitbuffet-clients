@@ -72,7 +72,7 @@ export class BitBuffet {
         payload.temperature = config.temperature;
       }
 
-      const response: AxiosResponse = await this.client.post('/scrape', payload, {
+      const response: AxiosResponse = await this.client.post('/extract', payload, {
         timeout,
       });
 

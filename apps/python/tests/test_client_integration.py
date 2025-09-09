@@ -4,7 +4,7 @@ Test suite for the Python Structured Scraper Client SDK for Integration Tests
 
 import pytest
 
-from src.scraper import BitBuffet
+from bitbuffet import BitBuffet
 from tests.schemas.recipe_schema import RecipeSchema
 from tests.schemas.article_schema import ArticleSchema
 import os

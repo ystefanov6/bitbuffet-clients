@@ -3,7 +3,7 @@
  **/
 
 import axios, { AxiosResponse } from 'axios';
-import { BitBuffet } from '../src/scraper';
+import { BitBuffet } from '../src/bitbuffet';
 import { RecipeSchema } from '../src/schemas/recipe';
 import { ArticleSchema } from '../src/schemas/article';
 import { jest, describe, test, expect, beforeEach } from '@jest/globals';
@@ -130,7 +130,7 @@ describe('BitBuffet', () => {
 
       // Verify API call includes all parameters
       expect(mockAxiosInstance.post).toHaveBeenCalledWith(
-        '/scrape',
+        '/extract',
         {
           url,
           json_schema: expect.any(Object),
@@ -295,7 +295,7 @@ describe('BitBuffet', () => {
     
       // Verify API call - Fix the expected values
       expect(mockAxiosInstance.post).toHaveBeenCalledWith(
-        '/scrape',
+        '/extract',
         {
           url,
           json_schema: expect.any(Object),  // This is correct
@@ -329,7 +329,7 @@ describe('BitBuffet', () => {
 
       // Verify API call
       expect(mockAxiosInstance.post).toHaveBeenCalledWith(
-        '/scrape',
+        '/extract',
         {
           url,
           json_schema: expect.any(Object)

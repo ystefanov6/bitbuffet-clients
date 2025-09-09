@@ -1,4 +1,4 @@
-import { BitBuffet } from '../src/scraper';
+import {BitBuffet} from '../src/bitbuffet';
 import { RecipeSchema } from '../src/schemas/recipe';
 import { describe, test, expect } from '@jest/globals';
 import { ArticleSchema } from '../src/schemas/article';
@@ -10,7 +10,9 @@ describe('Integration Tests', () => {
     test('should scrape real recipe URL with config', async () => {
       const url = 'https://www.recipetineats.com/butter-chicken/';
       
-      const result = await client.scrape(url, RecipeSchema, {}, 60000);
+      const result = await client.scrape(url, RecipeSchema, {
+        "reasoning_effort": "medium"
+      }, 60000);
       
       expect(result).toEqual(expect.objectContaining({
         title: expect.any(String),
@@ -60,7 +62,7 @@ describe('Integration Tests', () => {
         url, 
         ArticleSchema, 
         {
-          reasoning_effort: 'high',
+          reasoning_effort: 'medium',
           prompt: 'Extract the most important quotes and ensure accuracy'
         },
         45000
