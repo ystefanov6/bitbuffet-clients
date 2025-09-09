@@ -24,7 +24,7 @@ export class BitBuffet {
     if (!apiKey || !apiKey.trim()) {
       throw new Error('API key is required. Please provide a valid API key when initializing the BitBuffet.');
     }
-    this.baseUrl = `${process.env.BASE_API_URL}:${process.env.BASE_API_PORT}`;
+    this.baseUrl = `${process.env.BASE_API_URL}/${process.env.BASE_API_VERSION}`;
     this.client = axios.create({
       baseURL: this.baseUrl,
       headers: {

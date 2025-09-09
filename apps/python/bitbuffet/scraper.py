@@ -18,7 +18,7 @@ class BitBuffet:
         if not api_key or not api_key.strip():
             raise ValueError('API key is required. Please provide a valid API key when initializing the BitBuffet.')
         
-        self.base_url = f"{os.getenv('BASE_API_URL')}:{os.getenv('BASE_API_PORT')}"
+        self.base_url = f"{os.getenv('BASE_API_URL')}/{os.getenv('BASE_API_VERSION')}"
         self.session = requests.Session()
         self.session.headers.update({
             'Authorization': f'Bearer {api_key}',
