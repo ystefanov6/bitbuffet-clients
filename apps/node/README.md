@@ -1,3 +1,5 @@
+<img src="https://www.bitbuffet.dev/_next/image?url=%2Fbitbuffet-logo-closed-transparent.png&w=64&q=75" alt="BitBuffet Logo" width="64" height="64">
+
 # BitBuffet TypeScript/JavaScript SDK
 
 [![npm version](https://badge.fury.io/js/bitbuffet.svg)](https://badge.fury.io/js/bitbuffet)
@@ -7,12 +9,12 @@ A powerful TypeScript/JavaScript SDK for the BitBuffet API that allows you to ex
 
 ## 🚀 Features
 
+- **Universal**: Works with any website or web content (url, image, video, audio, youtube, pdf, etc.)
 - **Type-safe**: Built with TypeScript and Zod for complete type safety
 - **Fast**: Extract structured data in under 2 seconds
 - **Flexible**: Support for custom prompts and reasoning levels
 - **Easy to use**: Simple, intuitive API
 - **Well-tested**: Comprehensive test suite with integration tests
-- **Modern**: Uses async/await and modern JavaScript features
 
 ## 📦 Installation
 
