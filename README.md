@@ -25,7 +25,7 @@ BitBuffet is a powerful API that allows you to extract structured data from any 
 
 ### TypeScript/JavaScript SDK
 
-[![npm version](https://badge.fury.io/js/%40ystefanov6%2Fbitbuffet-js.svg)](https://badge.fury.io/js/%40ystefanov6%2Fbitbuffet-js)
+[![npm version](https://badge.fury.io/js/%40ystefanov6%2Fbitbuffet.svg)](https://badge.fury.io/js/%40ystefanov6%2Fbitbuffet)
 
 Perfect for Node.js applications, web apps, and serverless functions.
 
