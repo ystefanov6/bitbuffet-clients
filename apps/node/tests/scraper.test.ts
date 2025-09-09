@@ -4,9 +4,10 @@
 
 import axios, { AxiosResponse } from 'axios';
 import { BitBuffet } from '../src/bitbuffet';
-import { RecipeSchema } from '../src/schemas/recipe';
-import { ArticleSchema } from '../src/schemas/article';
 import { jest, describe, test, expect, beforeEach } from '@jest/globals';
+import { RecipeSchema } from './schemas/recipe';
+import { ArticleSchema } from './schemas/article';
+
 
 // Mock axios
 jest.mock('axios');
@@ -76,7 +77,7 @@ describe('BitBuffet', () => {
 
   const mockErrorResponse = {
     success: false,
-    error: "Failed to scrape the provided URL"
+    error: "Failed to extract the provided URL"
   };
 
   beforeEach(() => {
@@ -263,7 +264,7 @@ describe('BitBuffet', () => {
   });
 
   describe('Successful Scraping', () => {
-    test('should successfully scrape recipe with all parameters in config', async () => {
+    test('should successfully extract recipe with all parameters in config', async () => {
       // Setup mock response
       const mockResponse: Partial<AxiosResponse> = {
         data: mockRecipeResponse
@@ -307,7 +308,7 @@ describe('BitBuffet', () => {
       );
     });
 
-    test('should successfully scrape article with minimal parameters', async () => {
+    test('should successfully extract article with minimal parameters', async () => {
       // Setup mock response
       const mockResponse: Partial<AxiosResponse> = {
         data: mockArticleResponse
@@ -350,7 +351,7 @@ describe('BitBuffet', () => {
       // Test that Error is thrown for API errors
       await expect(
         client.extract('https://example.com', ArticleSchema)
-      ).rejects.toThrow('API returned error: Failed to scrape the provided URL');
+      ).rejects.toThrow('API returned error: Failed to extract the provided URL');
     });
 
     test('should handle network errors', async () => {

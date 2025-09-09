@@ -107,7 +107,7 @@ print(article.title)
 ## 🎯 Use Cases
 
 - **Content Aggregation**: Extract articles, blog posts, and news content
-- **E-commerce**: Scrape product information, prices, and reviews
+- **E-commerce**: extract product information, prices, and reviews
 - **Lead Generation**: Extract contact information and company details
 - **Market Research**: Gather competitive intelligence and pricing data
 - **Data Migration**: Convert unstructured web content to structured data

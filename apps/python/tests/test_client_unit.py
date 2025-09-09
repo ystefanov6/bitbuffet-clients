@@ -89,7 +89,7 @@ class TestBitBuffet:
         """Mock error response from API"""
         return {
             "success": False,
-            "error": "Failed to scrape the provided URL"
+            "error": "Failed to extract the provided URL"
         }
 
     def test_client_initialization_default(self):
@@ -332,7 +332,7 @@ class TestBitBuffet:
         mock_post.return_value = mock_response
         
         # Test that ValueError is raised for API errors
-        with pytest.raises(ValueError, match="API returned error: Failed to scrape the provided URL"):
+        with pytest.raises(ValueError, match="API returned error: Failed to extract the provided URL"):
             client.extract("https://example.com", ArticleSchema)
 
     @patch('bitbuffet.scraper.requests.Session.post')

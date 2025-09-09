@@ -47,7 +47,7 @@ class BitBuffet:
         
         return schema
     
-    def scrape(
+    def extract(
         self, 
         url: str, 
         schema_class: Type[T], 
@@ -58,10 +58,10 @@ class BitBuffet:
         temperature: Optional[Union[int, float]] = None
     ) -> T:
         """
-        Scrape a webpage and return a validated Pydantic model instance.
+        extract a webpage and return a validated Pydantic model instance.
         
         Args:
-            url: The URL to scrape
+            url: The URL to extract
             schema_class: Pydantic BaseModel class to validate against
             timeout: Request timeout in seconds
             reasoning_effort: Reasoning effort level ('medium' or 'high')

@@ -1,13 +1,13 @@
-import {BitBuffet} from '../src/bitbuffet';
-import { RecipeSchema } from '../src/schemas/recipe';
+import { BitBuffet } from '../src/bitbuffet';
 import { describe, test, expect } from '@jest/globals';
-import { ArticleSchema } from '../src/schemas/article';
+import { RecipeSchema } from './schemas/recipe';
+import { ArticleSchema } from './schemas/article';
 
 const client = new BitBuffet(process.env.TEST_API_KEY as string);
 
 describe('Integration Tests', () => {
   describe('Real API Calls', () => {
-    test('should scrape real recipe URL with config', async () => {
+    test('should extract real recipe URL with config', async () => {
       const url = 'https://www.recipetineats.com/butter-chicken/';
       
       const result = await client.extract(url, RecipeSchema, {
@@ -21,7 +21,7 @@ describe('Integration Tests', () => {
       expect(result.steps.length).toBeGreaterThan(0);
     }, 60000);
 
-    test('should scrape real article URL with minimal parameters', async () => {
+    test('should extract real article URL with minimal parameters', async () => {
       const url = 'https://www.bbc.co.uk/news/articles/clyrev00lwno';
       
       const result = await client.extract(url, ArticleSchema);
@@ -33,7 +33,7 @@ describe('Integration Tests', () => {
       }));
     });
 
-    test('should scrape recipe with all config parameters', async () => {
+    test('should extract recipe with all config parameters', async () => {
       const url = 'https://www.recipetineats.com/butter-chicken/';
       
       const result = await client.extract(
@@ -55,7 +55,7 @@ describe('Integration Tests', () => {
       expect(result.time.total).toBeGreaterThan(0);
     }, 60000);
 
-    test('should scrape article with reasoning effort and prompt in config', async () => {
+    test('should extract article with reasoning effort and prompt in config', async () => {
       const url = 'https://www.bbc.co.uk/news/articles/clyrev00lwno';
       
       const result = await client.extract(

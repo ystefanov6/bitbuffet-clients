@@ -35,9 +35,9 @@ export class BitBuffet {
   }
 
   /**
-   * Scrape a webpage and return a validated result
+   * extract a webpage and return a validated result
    */
-  async scrape<T>(
+  async extract<T>(
     url: string, 
     schema: ZodSchema<T>, 
     config: ScrapeConfig = {},
