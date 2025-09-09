@@ -22,7 +22,7 @@ class TestIntegration:
         """Integration test with real recipe URL (skipped by default)"""
         url = "https://www.recipetineats.com/butter-chicken/"
         
-        result = client.scrape(url, RecipeSchema, reasoning_effort="medium")
+        result = client.extract(url, RecipeSchema, reasoning_effort="medium")
         
         assert isinstance(result, RecipeSchema)
         assert result.title
@@ -35,7 +35,7 @@ class TestIntegration:
         """Integration test with real article URL (skipped by default)"""
         url = "https://www.bbc.co.uk/news/articles/clyrev00lwno"
         
-        result = client.scrape(url, ArticleSchema)
+        result = client.extract(url, ArticleSchema)
         
         assert isinstance(result, ArticleSchema)
         assert result.title
@@ -48,7 +48,7 @@ class TestIntegration:
         """Integration test with all new parameters"""
         url = "https://www.recipetineats.com/butter-chicken/"
         
-        result = client.scrape(
+        result = client.extract(
             url, 
             RecipeSchema, 
             reasoning_effort="high",
@@ -67,7 +67,7 @@ class TestIntegration:
         """Integration test with reasoning effort parameter"""
         url = "https://www.bbc.co.uk/news/articles/clyrev00lwno"
         
-        result = client.scrape(
+        result = client.extract(
             url, 
             ArticleSchema, 
             reasoning_effort="high",
@@ -87,14 +87,14 @@ class TestIntegration:
         url = "https://www.recipetineats.com/butter-chicken/"
         
         # Test with low temperature (more deterministic)
-        result_low = client.scrape(
+        result_low = client.extract(
             url, 
             ArticleSchema, 
             temperature=0.1
         )
         
         # Test with high temperature (more creative)
-        result_high = client.scrape(
+        result_high = client.extract(
             url, 
             ArticleSchema, 
             temperature=1
@@ -111,7 +111,7 @@ class TestIntegration:
         """Integration test with top_p parameter"""
         url = "https://www.bbc.co.uk/news/articles/clyrev00lwno"
         
-        result = client.scrape(
+        result = client.extract(
             url, 
             ArticleSchema, 
             reasoning_effort="medium",

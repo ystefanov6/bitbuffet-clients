@@ -120,7 +120,7 @@ class TestBitBuffet:
         mock_post.return_value = mock_response
         
         # Test with all new parameters
-        client.scrape(
+        client.extract(
             "https://example.com", 
             RecipeSchema,
             reasoning_effort="high",
@@ -148,7 +148,7 @@ class TestBitBuffet:
         mock_post.return_value = mock_response
         
         # Test with no optional parameters
-        client.scrape("https://example.com", RecipeSchema)
+        client.extract("https://example.com", RecipeSchema)
         
         # Verify the API call was made without optional parameters
         call_args = mock_post.call_args
@@ -173,7 +173,7 @@ class TestBitBuffet:
         valid_efforts = ["medium", "high"]
         
         for effort in valid_efforts:
-            client.scrape(
+            client.extract(
                 "https://example.com", 
                 RecipeSchema,
                 reasoning_effort=effort
@@ -192,7 +192,7 @@ class TestBitBuffet:
         mock_post.return_value = mock_response
         
         # Test with integer temperature
-        client.scrape(
+        client.extract(
             "https://example.com", 
             RecipeSchema,
             temperature=1
@@ -203,7 +203,7 @@ class TestBitBuffet:
         assert payload['temperature'] == 1
         
         # Test with float temperature
-        client.scrape(
+        client.extract(
             "https://example.com", 
             RecipeSchema,
             temperature=1.2
@@ -214,7 +214,7 @@ class TestBitBuffet:
         assert payload['temperature'] == 1.2
         
         # Test with float temperature
-        client.scrape(
+        client.extract(
             "https://example.com", 
             RecipeSchema,
             temperature=1.5
@@ -233,7 +233,7 @@ class TestBitBuffet:
         mock_post.return_value = mock_response
         
         # Test with float top_p
-        client.scrape(
+        client.extract(
             "https://example.com", 
             RecipeSchema,
             top_p=0.9
@@ -244,7 +244,7 @@ class TestBitBuffet:
         assert payload['top_p'] == 0.9
         
         # Test with integer top_p
-        client.scrape(
+        client.extract(
             "https://example.com", 
             RecipeSchema,
             top_p=1
@@ -258,7 +258,7 @@ class TestBitBuffet:
     def test_temperature_and_top_p_validation_error(self, mock_post: Mock, client: BitBuffet):
         """Test that providing both temperature and top_p raises ValueError"""
         with pytest.raises(ValueError, match="Cannot specify both 'temperature' and 'top_p' parameters. Please use only one."):
-            client.scrape(
+            client.extract(
                 "https://example.com", 
                 RecipeSchema,
                 temperature=1.0,
@@ -276,7 +276,7 @@ class TestBitBuffet:
         
         # Test scraping
         url = "https://www.recipetineats.com/butter-chicken/"
-        result = client.scrape(url, RecipeSchema, prompt="Focus on ingredients")
+        result = client.extract(url, RecipeSchema, prompt="Focus on ingredients")
         
         # Assertions
         assert isinstance(result, RecipeSchema)
@@ -306,7 +306,7 @@ class TestBitBuffet:
         
         # Test scraping
         url = "https://www.bbc.co.uk/news/articles/clyrev00lwno"
-        result = client.scrape(url, ArticleSchema)
+        result = client.extract(url, ArticleSchema)
         
         # Assertions
         assert isinstance(result, ArticleSchema)
@@ -333,7 +333,7 @@ class TestBitBuffet:
         
         # Test that ValueError is raised for API errors
         with pytest.raises(ValueError, match="API returned error: Failed to scrape the provided URL"):
-            client.scrape("https://example.com", ArticleSchema)
+            client.extract("https://example.com", ArticleSchema)
 
     @patch('bitbuffet.scraper.requests.Session.post')
     def test_network_error_handling(self, mock_post: Mock, client: BitBuffet):
@@ -343,7 +343,7 @@ class TestBitBuffet:
         
         # Test that RequestException is raised and properly wrapped
         with pytest.raises(requests.RequestException, match="API request failed: Connection failed"):
-            client.scrape("https://example.com", ArticleSchema)
+            client.extract("https://example.com", ArticleSchema)
 
     @patch('bitbuffet.scraper.requests.Session.post')
     def test_invalid_json_response(self, mock_post: Mock, client: BitBuffet):
@@ -356,7 +356,7 @@ class TestBitBuffet:
         
         # Test that ValueError is raised for invalid JSON
         with pytest.raises(ValueError, match="Invalid JSON response: Invalid JSON"):
-            client.scrape("https://example.com", ArticleSchema)
+            client.extract("https://example.com", ArticleSchema)
 
     @patch('bitbuffet.scraper.requests.Session.post')
     def test_http_error_handling(self, mock_post: Mock, client: BitBuffet):
@@ -368,7 +368,7 @@ class TestBitBuffet:
         
         # Test that HTTPError is raised
         with pytest.raises(requests.RequestException, match="API request failed: 404 Not Found"):
-            client.scrape("https://example.com", ArticleSchema)
+            client.extract("https://example.com", ArticleSchema)
 
     @patch('bitbuffet.scraper.requests.Session.post')
     def test_timeout_parameter(self, mock_post: Mock, client: BitBuffet):
@@ -388,7 +388,7 @@ class TestBitBuffet:
         mock_post.return_value = mock_response
         
         # Test with custom timeout
-        client.scrape("https://example.com", ArticleSchema, timeout=30)
+        client.extract("https://example.com", ArticleSchema, timeout=30)
         
         # Verify timeout was passed to requests
         call_args = mock_post.call_args

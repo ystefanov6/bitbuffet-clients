@@ -1,5 +1,5 @@
 {
-  "name": "@ystefanov6/bitbuffet-js",
+  "name": "bitbuffet",
   "version": "0.1.0",
   "description": "TypeScript SDK for the Structured Scraper API - BitBuffet",
   "main": "dist/index.js",

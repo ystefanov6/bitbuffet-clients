@@ -116,7 +116,7 @@ describe('BitBuffet', () => {
 
       // Test with all new parameters in config
       const url = 'https://www.recipetineats.com/butter-chicken/';
-      await client.scrape(
+      await client.extract(
         url,
         RecipeSchema,
         {
@@ -152,7 +152,7 @@ describe('BitBuffet', () => {
 
       // Test with empty config
       const url = 'https://www.bbc.co.uk/news/articles/clyrev00lwno';
-      await client.scrape(url, ArticleSchema, {});
+      await client.extract(url, ArticleSchema, {});
 
       // Verify API call excludes optional parameters
       const callArgs = mockAxiosInstance.post.mock.calls[0];
@@ -178,7 +178,7 @@ describe('BitBuffet', () => {
       const validEfforts: ('medium' | 'high')[] = ['medium', 'high'];
       
       for (const effort of validEfforts) {
-        await client.scrape(
+        await client.extract(
           'https://example.com',
           RecipeSchema,
           { reasoning_effort: effort }
@@ -198,7 +198,7 @@ describe('BitBuffet', () => {
       mockAxiosInstance.post.mockResolvedValue(mockResponse);
 
       // Test with integer temperature
-      await client.scrape(
+      await client.extract(
         'https://example.com',
         RecipeSchema,
         { temperature: 1 }
@@ -209,7 +209,7 @@ describe('BitBuffet', () => {
       expect(payload.temperature).toBe(1);
 
       // Test with float temperature
-      await client.scrape(
+      await client.extract(
         'https://example.com',
         RecipeSchema,
         { temperature: 1.2 }
@@ -228,7 +228,7 @@ describe('BitBuffet', () => {
       mockAxiosInstance.post.mockResolvedValue(mockResponse);
 
       // Test with float top_p
-      await client.scrape(
+      await client.extract(
         'https://example.com',
         RecipeSchema,
         { top_p: 0.9 }
@@ -239,7 +239,7 @@ describe('BitBuffet', () => {
       expect(payload.top_p).toBe(0.9);
 
       // Test with integer top_p
-      await client.scrape(
+      await client.extract(
         'https://example.com',
         RecipeSchema,
         { top_p: 1 }
@@ -251,7 +251,7 @@ describe('BitBuffet', () => {
     });
 
     test('should throw error when both temperature and top_p are provided in config', async () => {
-      await expect(client.scrape(
+      await expect(client.extract(
         'https://example.com',
         RecipeSchema,
         {
@@ -272,7 +272,7 @@ describe('BitBuffet', () => {
     
       // Test scraping
       const url = 'https://www.recipetineats.com/butter-chicken/';
-      const result = await client.scrape(
+      const result = await client.extract(
         url, 
         RecipeSchema, 
         {
@@ -316,7 +316,7 @@ describe('BitBuffet', () => {
 
       // Test scraping
       const url = 'https://www.bbc.co.uk/news/articles/clyrev00lwno';
-      const result = await client.scrape(url, ArticleSchema);
+      const result = await client.extract(url, ArticleSchema);
 
       // Assertions
       expect(result).toEqual(expect.objectContaining({
@@ -349,7 +349,7 @@ describe('BitBuffet', () => {
 
       // Test that Error is thrown for API errors
       await expect(
-        client.scrape('https://example.com', ArticleSchema)
+        client.extract('https://example.com', ArticleSchema)
       ).rejects.toThrow('API returned error: Failed to scrape the provided URL');
     });
 
@@ -364,7 +364,7 @@ describe('BitBuffet', () => {
 
       // Test that Error is thrown and properly wrapped
       await expect(
-        client.scrape('https://example.com', ArticleSchema)
+        client.extract('https://example.com', ArticleSchema)
       ).rejects.toThrow('API request failed: Connection failed');
     });
 
@@ -384,7 +384,7 @@ describe('BitBuffet', () => {
 
       // Test that validation error is thrown
       await expect(
-        client.scrape('https://example.com', ArticleSchema)
+        client.extract('https://example.com', ArticleSchema)
       ).rejects.toThrow('Validation failed');
     });
   });

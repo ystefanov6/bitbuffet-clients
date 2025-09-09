@@ -10,7 +10,7 @@ describe('Integration Tests', () => {
     test('should scrape real recipe URL with config', async () => {
       const url = 'https://www.recipetineats.com/butter-chicken/';
       
-      const result = await client.scrape(url, RecipeSchema, {
+      const result = await client.extract(url, RecipeSchema, {
         "reasoning_effort": "medium"
       }, 60000);
       
@@ -24,7 +24,7 @@ describe('Integration Tests', () => {
     test('should scrape real article URL with minimal parameters', async () => {
       const url = 'https://www.bbc.co.uk/news/articles/clyrev00lwno';
       
-      const result = await client.scrape(url, ArticleSchema);
+      const result = await client.extract(url, ArticleSchema);
       
       expect(result).toEqual(expect.objectContaining({
         title: expect.any(String),
@@ -36,7 +36,7 @@ describe('Integration Tests', () => {
     test('should scrape recipe with all config parameters', async () => {
       const url = 'https://www.recipetineats.com/butter-chicken/';
       
-      const result = await client.scrape(
+      const result = await client.extract(
         url, 
         RecipeSchema, 
         {
@@ -58,7 +58,7 @@ describe('Integration Tests', () => {
     test('should scrape article with reasoning effort and prompt in config', async () => {
       const url = 'https://www.bbc.co.uk/news/articles/clyrev00lwno';
       
-      const result = await client.scrape(
+      const result = await client.extract(
         url, 
         ArticleSchema, 
         {
@@ -80,7 +80,7 @@ describe('Integration Tests', () => {
       const url = 'https://www.recipetineats.com/butter-chicken/';
       
       // Test with low temperature (more deterministic)
-      const resultLow = await client.scrape(
+      const resultLow = await client.extract(
         url, 
         RecipeSchema, 
         {
@@ -95,7 +95,7 @@ describe('Integration Tests', () => {
         author: expect.any(String)
       }));
       
-      const resultHigh = await client.scrape(
+      const resultHigh = await client.extract(
         'https://www.bbc.com/news/articles/clyrev00lwno',
         ArticleSchema,
         {
@@ -114,7 +114,7 @@ describe('Integration Tests', () => {
     test('should handle top_p parameter in config', async () => {
       const url = 'https://www.bbc.co.uk/news/articles/clyrev00lwno';
       
-      const result = await client.scrape(
+      const result = await client.extract(
         url, 
         ArticleSchema, 
         {
@@ -134,7 +134,7 @@ describe('Integration Tests', () => {
     test('should work with only reasoning effort parameter in config', async () => {
       const url = 'https://www.recipetineats.com/butter-chicken/';
       
-      const result = await client.scrape(
+      const result = await client.extract(
         url, 
         RecipeSchema, 
         { reasoning_effort: 'high' },

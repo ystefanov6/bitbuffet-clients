@@ -4,7 +4,6 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 import dotenv from 'dotenv'
 import path from 'path'
 
-// Configure dotenv to look for .env file in the root directory
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') })
 
 type ReasoningEffort = 'medium' | 'high';
