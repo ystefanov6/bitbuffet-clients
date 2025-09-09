@@ -326,7 +326,7 @@
   dependencies:
     camelcase "^5.3.1"
     find-up "^4.1.0"
-    get-package-type "^0.1.0"
+    get-package-type "^0.1.1"
     js-yaml "^3.13.1"
     resolve-from "^5.0.0"
 
@@ -1402,9 +1402,9 @@ get-intrinsic@^1.2.6:
     hasown "^2.0.2"
     math-intrinsics "^1.1.0"
 
-get-package-type@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/get-package-type/-/get-package-type-0.1.0.tgz#8de2d803cff44df3bc6c456e6668b36c3926e11a"
+get-package-type@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/get-package-type/-/get-package-type-0.1.1.tgz#8de2d803cff44df3bc6c456e6668b36c3926e11a"
   integrity sha512-pjzuKtY64GYfWizNAJ0fr9VqttZkNiK2iS430LtIHzjBEr6bX8Am2zm4sW4Ro5wjWW5cAlRL1qAMTcXbjNAO2Q==
 
 get-proto@^1.0.1:
@@ -2171,7 +2171,7 @@ p-limit@^3.1.0:
   resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-3.1.0.tgz#e1daccbe78d0d1388ca18c64fea38e3e57e3706b"
   integrity sha512-TYOanM3wGwNGsZN2cVTYPArw454xnXj5qmWF1bEoAc4+cU/ol7GVh7odevjp1FNHduHc3KZMcFduxU5Xc6uJRQ==
   dependencies:
-    yocto-queue "^0.1.0"
+    yocto-queue "^0.1.1"
 
 p-locate@^4.1.0:
   version "4.1.0"
@@ -2681,9 +2681,9 @@ yn@3.1.1:
   resolved "https://registry.yarnpkg.com/yn/-/yn-3.1.1.tgz#1e87401a09d767c1d5eab26a6e4c185182d2eb50"
   integrity sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==
 
-yocto-queue@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
+yocto-queue@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.1.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
 zod-to-json-schema@^3.24.6:
