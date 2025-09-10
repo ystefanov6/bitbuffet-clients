@@ -2,10 +2,10 @@ import requests
 from typing import Dict, Any, Type, Optional, Literal, TypeVar, Union
 import json
 from pydantic import BaseModel
-import os
-from dotenv import load_dotenv
 
-load_dotenv()
+BASE_API_URL="https://api.bitbuffet.dev"
+BASE_API_VERSION="v1"
+DEFAULT_TIMEOUT=60000
 
 # Define a TypeVar bound to BaseModel
 T = TypeVar('T', bound=BaseModel)
@@ -18,7 +18,7 @@ class BitBuffet:
         if not api_key or not api_key.strip():
             raise ValueError('API key is required. Please provide a valid API key when initializing the BitBuffet.')
         
-        self.base_url = f"{os.getenv('BASE_API_URL')}/{os.getenv('BASE_API_VERSION')}"
+        self.base_url = f"{BASE_API_URL}/{BASE_API_VERSION}"
         self.session = requests.Session()
         self.session.headers.update({
             'Authorization': f'Bearer {api_key}',
@@ -51,7 +51,7 @@ class BitBuffet:
         self, 
         url: str, 
         schema_class: Type[T], 
-        timeout: int = int(os.getenv('DEFAULT_TIMEOUT'))/1000,
+        timeout: int = DEFAULT_TIMEOUT/1000,
         reasoning_effort: Optional[Literal['medium', 'high']] = None,
         prompt: Optional[str] = None,
         top_p: Optional[Union[int, float]] = None,

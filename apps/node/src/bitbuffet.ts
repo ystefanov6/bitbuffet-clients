@@ -1,10 +1,10 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { z, ZodSchema } from 'zod';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import dotenv from 'dotenv'
-import path from 'path'
 
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') })
+const BASE_API_URL="https://api.bitbuffet.dev"
+const BASE_API_VERSION="v1"
+const DEFAULT_TIMEOUT=60000
 
 type ReasoningEffort = 'medium' | 'high';
 
@@ -24,7 +24,7 @@ export class BitBuffet {
     if (!apiKey || !apiKey.trim()) {
       throw new Error('API key is required. Please provide a valid API key when initializing the BitBuffet.');
     }
-    this.baseUrl = `${process.env.BASE_API_URL}/${process.env.BASE_API_VERSION}`;
+    this.baseUrl = `${BASE_API_URL}/${BASE_API_VERSION}`;
     this.client = axios.create({
       baseURL: this.baseUrl,
       headers: {
@@ -41,7 +41,7 @@ export class BitBuffet {
     url: string, 
     schema: ZodSchema<T>, 
     config: ScrapeConfig = {},
-    timeout: number = Number(process.env.DEFAULT_TIMEOUT)
+    timeout: number = DEFAULT_TIMEOUT,
   ): Promise<T> {
     try {
       // Validate that both temperature and top_p are not provided simultaneously
