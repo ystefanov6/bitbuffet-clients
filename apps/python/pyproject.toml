@@ -55,4 +55,4 @@ markers = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/bitbuffet"]
+packages = ["bitbuffet"]
