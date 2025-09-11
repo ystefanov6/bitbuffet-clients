@@ -94,7 +94,7 @@ import { BitBuffet } from 'bitbuffet';
 const client = new BitBuffet('your-api-key');
 const markdown = await client.extract(
   'https://example.com/article',
-  { method: 'markdown' }
+  { format: 'markdown' }
 );
 
 console.log(markdown);
@@ -129,7 +129,7 @@ from bitbuffet import BitBuffet
 client = BitBuffet(api_key="your-api-key")
 markdown = client.extract(
     url="https://example.com/article",
-    method="markdown"
+    format="markdown"
 )
 
 print(markdown)
@@ -137,53 +137,53 @@ print(markdown)
 
 ## ⚙️ Extraction Methods
 
-Both SDKs support two extraction methods controlled by the `method` parameter:
+Both SDKs support two extraction methods controlled by the `format` parameter:
 
-### JSON Method (Default)
+### JSON Format (Default)
 - **Purpose**: Extract structured data according to your schema
 - **Output**: Validated data matching your schema (Zod/Pydantic model)
 - **Use Case**: When you need specific data fields in a structured format
 - **Requirements**: Schema must be provided
-- **Method Parameter**: `method: 'json'` (optional - this is the default)
+- **Format Parameter**: `format: 'json'` (optional - this is the default)
 
-### Markdown Method
+### Markdown Format
 - **Purpose**: Extract raw markdown content from the webpage
 - **Output**: Raw markdown string
 - **Use Case**: When you need the full content for processing, analysis, or conversion
-- **Requirements**: No schema needed, method must be explicitly specified
-- **Method Parameter**: `method: 'markdown'` (required)
+- **Requirements**: No schema needed, format must be explicitly specified
+- **Format Parameter**: `format: 'markdown'` (required)
 
-### TypeScript/JavaScript Method Usage:
+### TypeScript/JavaScript Format Usage:
 
 ```typescript
-// JSON extraction (method parameter optional)
+// JSON extraction (format parameter optional)
 const structuredData = await client.extract(
   'https://example.com/article',
   ArticleSchema,
-  { method: 'json' } // Optional - this is default
+  { format: 'json' } // Optional - this is default
 );
 
-// Markdown extraction (method parameter required)
+// Markdown extraction (format parameter required)
 const markdownContent = await client.extract(
   'https://example.com/article',
-  { method: 'markdown' }
+  { format: 'markdown' }
 );
 ```
 
-### Python Method Usage:
+### Python Format Usage:
 
 ```python
-# JSON extraction (method parameter optional)
+# JSON extraction (format parameter optional)
 structured_data = client.extract(
     url="https://example.com/article",
     schema_class=Article,
-    method="json"  # Optional - this is default
+    format="json"  # Optional - this is default
 )
 
-# Markdown extraction (method parameter required)
+# Markdown extraction (format parameter required)
 markdown_content = client.extract(
     url="https://example.com/article",
-    method="markdown"
+    format="markdown"
 )
 ```
 
@@ -201,7 +201,7 @@ markdown_content = client.extract(
 
 Both SDKs support advanced configuration:
 
-- **Method Selection**: Choose between 'json' and 'markdown' extraction
+- **Format Selection**: Choose between 'json' and 'markdown' extraction
 - **Reasoning Effort**: Choose between 'medium' and 'high' for complex pages
 - **Custom Prompts**: Guide the extraction with specific instructions
 - **Temperature Control**: Adjust consistency vs creativity in extraction

@@ -17,11 +17,11 @@ interface BaseConfig {
 }
 
 interface JsonConfig extends BaseConfig {
-  method?: 'json';
+  format?: 'json';
 }
 
 interface MarkdownConfig extends BaseConfig {
-  method: 'markdown';
+  format: 'markdown';
 }
 
 export class BitBuffet {
@@ -66,7 +66,7 @@ export class BitBuffet {
     timeout?: number
   ): Promise<string>;
 
-  // NEW: Overload for JSON method without schema (will throw error at runtime)
+  // NEW: Overload for JSON format without schema (will throw error at runtime)
   async extract(
     url: string,
     config: JsonConfig,
@@ -81,15 +81,15 @@ export class BitBuffet {
     timeout: number = DEFAULT_TIMEOUT
   ): Promise<T | string | never> {
     try {
-      let method: ExtractionMethod = 'json';
+      let format: ExtractionMethod = 'json';
       let schema: ZodSchema<T> | undefined;
       let config: BaseConfig = {};
       let actualTimeout = timeout;
   
       // Parse arguments based on overload
-      if (schemaOrConfig && typeof schemaOrConfig === 'object' && 'method' in schemaOrConfig) {
+      if (schemaOrConfig && typeof schemaOrConfig === 'object' && 'format' in schemaOrConfig) {
         // Config as second parameter: extract(url, config, timeout?)
-        method = schemaOrConfig!.method!;
+        format = schemaOrConfig!.format!;
         config = schemaOrConfig;
         if (typeof configOrTimeout === 'number') {
           actualTimeout = configOrTimeout;
@@ -99,7 +99,7 @@ export class BitBuffet {
         schema = schemaOrConfig as ZodSchema<T>;
         if (typeof configOrTimeout === 'object') {
           config = configOrTimeout;
-          method = configOrTimeout.method || 'json';
+          format = configOrTimeout.format || 'json';
         } else if (typeof configOrTimeout === 'number') {
           actualTimeout = configOrTimeout;
         }
@@ -110,23 +110,23 @@ export class BitBuffet {
         throw new Error("Cannot specify both 'temperature' and 'top_p' parameters. Please use only one.");
       }
   
-      // Validate method and schema requirements
-      if (method === 'json' && !schema) {
-        throw new Error("json_schema is required when method is 'json'");
+      // Validate format and schema requirements
+      if (format === 'json' && !schema) {
+        throw new Error("json_schema is required when format is 'json'");
       }
       // Remove the restriction for markdown + schema since it's now allowed
       // The schema will simply be ignored for markdown extraction
-      if (method === 'markdown' && schema) {
-        throw new Error("json_schema should not be defined when method is 'markdown'");
+      if (format === 'markdown' && schema) {
+        throw new Error("json_schema should not be defined when format is 'markdown'");
       }
   
       const payload: any = {
         url,
-        method,
+        format,
       };
   
-      // Add schema for JSON method
-      if (method === 'json' && schema) {
+      // Add schema for JSON format
+      if (format === 'json' && schema) {
         const jsonSchema = zodToJsonSchema(schema);
         payload.json_schema = jsonSchema;
       }
@@ -155,11 +155,11 @@ export class BitBuffet {
         throw new Error(`API returned error: ${result.error || 'Unknown error'}`);
       }
   
-      // Return based on method
-      if (method === 'markdown') {
+      // Return based on format
+      if (format === 'markdown') {
         return result.data as string;
       } else {
-        // Validate and return the result using Zod for JSON method
+        // Validate and return the result using Zod for JSON format
         return schema!.parse(result.data) as T;
       }
       

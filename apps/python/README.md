@@ -75,7 +75,7 @@ client = BitBuffet(api_key="your-api-key-here")
 try:
     markdown: str = client.extract(
         url="https://example.com/article",
-        method="markdown"
+        format="markdown"
     )
     
     print("Raw markdown content:")
@@ -88,7 +88,7 @@ except Exception as error:
 
 Choose between structured JSON extraction or raw markdown content:
 
-### JSON Method (Default)
+### JSON Format (Default)
 Extracts structured data according to your Pydantic model:
 
 ```python
@@ -100,21 +100,21 @@ class Product(BaseModel):
 product = client.extract(
     url="https://example.com/product",
     schema_class=Product,
-    method="json"  # Optional - this is the default
+    format="json"  # Optional - this is the default
 )
 ```
 
-### Markdown Method
+### Markdown Format
 Returns the raw markdown content of the webpage:
 
 ```python
 markdown = client.extract(
     url="https://example.com/article",
-    method="markdown"
+    format="markdown"
 )
 ```
 
-**Note:** When using `method="markdown"`, do not provide a `schema_class` parameter.
+**Note:** When using `format="markdown"`, do not provide a `schema_class` parameter.
 
 ## ⚙️ Configuration Options
 
@@ -125,7 +125,7 @@ Customize the extraction process with various options:
 result = client.extract(
     url="https://example.com/complex-page",
     schema_class=Article,
-    method="json",  # Optional - this is the default
+    format="json",  # Optional - this is the default
     timeout=30,  # Timeout in seconds (default: 30)
     reasoning_effort="high",  # 'medium' | 'high' - Higher effort for complex pages
     prompt="Focus on extracting the main article content, ignoring ads and navigation",
@@ -137,7 +137,7 @@ result = client.extract(
 # Markdown extraction with configuration
 markdown = client.extract(
     url="https://example.com/article",
-    method="markdown",  # Required for markdown extraction
+    format="markdown",  # Required for markdown extraction
     timeout=30,
     reasoning_effort="medium",
     prompt="Focus on the main content, ignore navigation and ads"
@@ -147,8 +147,8 @@ markdown = client.extract(
 ### Parameter Validation:
 
 - **Temperature vs Top-p**: Cannot specify both `temperature` and `top_p` simultaneously
-- **Method Validation**: The SDK will raise `ValueError` for invalid method/schema combinations
-- **Type Safety**: Method overloads provide compile-time type checking
+- **Format Validation**: The SDK will raise `ValueError` for invalid format/schema combinations
+- **Type Safety**: Format overloads provide compile-time type checking
 
 ## 📚 Advanced Examples
 
@@ -218,7 +218,7 @@ print(f"Category: {article.category}")
 # Extract raw markdown for further processing
 raw_content = client.extract(
     url="https://blog.example.com/post/123",
-    method="markdown"
+    format="markdown"
 )
 
 # Process the markdown content
@@ -240,7 +240,7 @@ BitBuffet(api_key: str)
 
 #### Methods
 
-The `extract` method has two overloaded signatures for type safety:
+The `extract` format has two overloaded signatures for type safety:
 
 ##### JSON Extraction (Default)
 ```python
@@ -252,7 +252,7 @@ extract(
     prompt: Optional[str] = None,
     top_p: Optional[Union[int, float]] = None,
     temperature: Optional[Union[int, float]] = None,
-    method: Literal['json'] = 'json'  # Optional - defaults to 'json'
+    format: Literal['json'] = 'json'  # Optional - defaults to 'json'
 ) -> BaseModel
 ```
 
@@ -260,7 +260,7 @@ extract(
 ```python
 extract(
     url: str,
-    method: Literal['markdown'],  # Required for markdown extraction
+    format: Literal['markdown'],  # Required for markdown extraction
     timeout: int = 30,
     reasoning_effort: Optional[Literal['medium', 'high']] = None,
     prompt: Optional[str] = None,
@@ -271,8 +271,8 @@ extract(
 
 **Parameters:**
 - `url`: The URL to extract data from
-- `schema_class`: Pydantic model class defining the expected data structure (JSON method only)
-- `method`: Extraction method ('json' or 'markdown')
+- `schema_class`: Pydantic model class defining the expected data structure (JSON format only)
+- `format`: Extraction format ('json' or 'markdown')
   - For JSON: Optional, defaults to 'json'
   - For Markdown: Required, must be 'markdown'
 - `timeout`: Request timeout in seconds (default: 30)
@@ -282,28 +282,28 @@ extract(
 - `top_p`: Alternative to temperature (optional, cannot be used with temperature)
 
 **Returns:** 
-- JSON method: Instance of the provided Pydantic model with extracted data
-- Markdown method: Raw markdown content as string
+- JSON format: Instance of the provided Pydantic model with extracted data
+- Markdown format: Raw markdown content as string
 
 **Raises:**
-- `ValueError`: When method/schema combination is invalid or both temperature and top_p are provided
+- `ValueError`: When format/schema combination is invalid or both temperature and top_p are provided
 - `requests.RequestException`: When API request fails
 
-**Method Overload Rules:**
+**Format Overload Rules:**
 
-1. **JSON Method Requirements:**
+1. **JSON Format Requirements:**
    - A Pydantic model class MUST be provided via `schema_class` parameter
    - Returns an instance of your Pydantic model with validated data
-   - `method="json"` is optional (default behavior)
+   - `format="json"` is optional (default behavior)
 
-2. **Markdown Method Requirements:**
+2. **Markdown Format Requirements:**
    - NO `schema_class` should be provided
-   - `method="markdown"` MUST be specified
+   - `format="markdown"` MUST be specified
    - Returns raw markdown content as string
-   - Schema class and markdown method cannot be used together
+   - Schema class and markdown format cannot be used together
 
 3. **Type Safety:**
-   - The SDK uses method overloads to enforce these rules at the type level
+   - The SDK uses format overloads to enforce these rules at the type level
    - This ensures type safety and prevents invalid parameter combinations
 
 ## 🛠️ Development

@@ -130,7 +130,7 @@ class TestIntegration:
 
 
 class TestMethodParameterIntegration:
-    """Integration tests for the new method parameter functionality"""
+    """Integration tests for the new format parameter functionality"""
     
     @pytest.mark.integration
     @pytest.mark.skip(reason="Requires actual API endpoint and may be slow")
@@ -138,7 +138,7 @@ class TestMethodParameterIntegration:
         """Integration test with real URL for markdown extraction (skipped by default)"""
         url = "https://www.bbc.co.uk/news/articles/clyrev00lwno"
         
-        result = client.extract(url, method="markdown")
+        result = client.extract(url, format="markdown")
         
         assert isinstance(result, str)
         assert len(result) > 100  # Should have substantial content

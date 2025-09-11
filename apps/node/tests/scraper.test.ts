@@ -139,7 +139,7 @@ describe('BitBuffet', () => {
         '/extract',
         {
           url,
-          method: 'json',  // Add this line
+          format: 'json',  // Add this line
           json_schema: expect.any(Object),
           reasoning_effort: 'high',
           prompt: 'Focus on extracting detailed cooking instructions',
@@ -167,7 +167,7 @@ describe('BitBuffet', () => {
       
       expect(payload).toEqual({
         url,
-        method: 'json',  // Add this line
+        format: 'json',  // Add this line
         json_schema: expect.any(Object)
       });
       expect(payload).not.toHaveProperty('reasoning_effort');
@@ -306,7 +306,7 @@ describe('BitBuffet', () => {
         '/extract',
         {
           url,
-          method: 'json',  // Add this line
+          format: 'json',  // Add this line
           json_schema: expect.any(Object),  // This is correct
           reasoning_effort: 'high',
           prompt: 'Focus on extracting detailed cooking instructions',
@@ -341,7 +341,7 @@ describe('BitBuffet', () => {
         '/extract',
         {
           url,
-          method: 'json',  // Add this line
+          format: 'json',  // Add this line
           json_schema: expect.any(Object)
         },
         { timeout: expect.any(Number) }
@@ -399,13 +399,13 @@ describe('BitBuffet', () => {
     });
   });
 
-  describe('Method Parameter Tests', () => {
+  describe('Format Parameter Tests', () => {
     test('should successfully extract markdown content without schema', async () => {
       // Setup mock response for markdown extraction
       const mockMarkdownResponse = {
         success: true,
         data: '# Article Title\n\nThis is the markdown content of the article...\n\n## Section 1\n\nMore content here.',
-        method: 'markdown'
+        format: 'markdown'
       };
       
       const mockResponse: Partial<AxiosResponse> = {
@@ -415,7 +415,7 @@ describe('BitBuffet', () => {
 
       // Test markdown extraction
       const url = 'https://example.com/article';
-      const result = await client.extract(url, { method: 'markdown' });
+      const result = await client.extract(url, { format: 'markdown' });
 
       // Assertions
       expect(typeof result).toBe('string');
@@ -427,25 +427,25 @@ describe('BitBuffet', () => {
         '/extract',
         {
           url,
-          method: 'markdown'
+          format: 'markdown'
         },
         { timeout: expect.any(Number) }
       );
     });
 
-    test('should throw error when schema is provided with markdown method', async () => {
+    test('should throw error when schema is provided with markdown format', async () => {
       await expect(client.extract(
         'https://example.com',
         ArticleSchema,
-        { method: 'markdown' }
-      )).rejects.toThrow("json_schema should not be defined when method is 'markdown'");
+        { format: 'markdown' }
+      )).rejects.toThrow("json_schema should not be defined when format is 'markdown'");
     });
 
-    test('should throw error when no schema is provided with json method', async () => {
+    test('should throw error when no schema is provided with json format', async () => {
       await expect(client.extract(
         'https://example.com',
-        { method: 'json' }
-      )).rejects.toThrow("json_schema is required when method is 'json'");
+        { format: 'json' }
+      )).rejects.toThrow("json_schema is required when format is 'json'");
     });
   });
 });

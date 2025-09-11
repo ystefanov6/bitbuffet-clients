@@ -77,7 +77,7 @@ const client = new BitBuffet('your-api-key-here');
 try {
   const markdown: string = await client.extract(
     'https://example.com/article',
-    { method: 'markdown' }
+    { format: 'markdown' }
   );
   
   console.log('Raw markdown content:');
@@ -91,7 +91,7 @@ try {
 
 Choose between structured JSON extraction or raw markdown content:
 
-### JSON Method (Default)
+### JSON Format (Default)
 Extracts structured data according to your Zod schema:
 
 ```typescript
@@ -104,39 +104,39 @@ const ProductSchema = z.object({
 const product = await client.extract(
   'https://example.com/product',
   ProductSchema,
-  { method: 'json' } // Optional - this is the default
+  { format: 'json' } // Optional - this is the default
 );
 ```
 
-### Markdown Method
+### Markdown Format
 Returns the raw markdown content of the webpage:
 
 ```typescript
 const markdown = await client.extract(
   'https://example.com/article',
-  { method: 'markdown' }
+  { format: 'markdown' }
 );
 ```
 
-**Note:** When using `method: 'markdown'`, do not provide a schema as the second parameter.
+**Note:** When using `format: 'markdown'`, do not provide a schema as the second parameter.
 
-### Method Usage Patterns
+### Format Usage Patterns
 
-The SDK supports two extraction methods via the `method` parameter:
+The SDK supports two extraction methods via the `format` parameter:
 
 #### JSON Extraction (Default)
 ```typescript
-// Method 1a: Schema with optional config (method defaults to 'json')
+// Format 1a: Schema with optional config (format defaults to 'json')
 const result = await client.extract(
   'https://example.com/article',
   ArticleSchema,
   { 
-    method: 'json', // Optional - this is the default
+    format: 'json', // Optional - this is the default
     reasoning_effort: 'high' 
   }
 );
 
-// Method 1b: Schema without config (method defaults to 'json')
+// Format 1b: Schema without config (format defaults to 'json')
 const result = await client.extract(
   'https://example.com/article',
   ArticleSchema
@@ -145,37 +145,37 @@ const result = await client.extract(
 
 #### Markdown Extraction
 ```typescript
-// Method 2a: Config object with method specified
+// Format 2a: Config object with format specified
 const markdown = await client.extract(
   'https://example.com/article',
   { 
-    method: 'markdown',
+    format: 'markdown',
     reasoning_effort: 'medium',
     prompt: 'Focus on main content'
   }
 );
 
-// Method 2b: Minimal markdown extraction
+// Format 2b: Minimal markdown extraction
 const markdown = await client.extract(
   'https://example.com/article',
-  { method: 'markdown' }
+  { format: 'markdown' }
 );
 ```
 
-#### Important Method Rules:
+#### Important Format Rules:
 
-1. **JSON Method Requirements:**
+1. **JSON Format Requirements:**
    - A Zod schema MUST be provided as the second parameter
    - Returns typed data matching your schema
-   - `method: 'json'` is optional (default behavior)
+   - `format: 'json'` is optional (default behavior)
 
-2. **Markdown Method Requirements:**
+2. **Markdown Format Requirements:**
    - NO schema should be provided
-   - `method: 'markdown'` MUST be specified in config object
+   - `format: 'markdown'` MUST be specified in config object
    - Returns raw markdown string
-   - Schema and markdown method cannot be used together
+   - Schema and markdown format cannot be used together
 
-3. **Method Parameter Location:**
+3. **Format Parameter Location:**
    - Always specified in the configuration object
    - Never passed as a separate parameter
 
@@ -189,7 +189,7 @@ const result = await client.extract(
   'https://example.com/complex-page',
   ArticleSchema,
   {
-    method: 'json', // Optional - default behavior
+    format: 'json', // Optional - default behavior
     reasoning_effort: 'high', // 'medium' | 'high' - Higher effort for complex pages
     prompt: 'Focus on extracting the main article content, ignoring ads and navigation',
     temperature: 0.1, // Lower for more consistent results (0.0 - 1.5)
@@ -203,7 +203,7 @@ const result = await client.extract(
 const markdown = await client.extract(
   'https://example.com/article',
   {
-    method: 'markdown',
+    format: 'markdown',
     reasoning_effort: 'medium',
     prompt: 'Focus on the main content, ignore navigation and ads'
   },
@@ -265,7 +265,7 @@ const article = await client.extract(
 // Extract raw markdown for further processing
 const rawContent = await client.extract(
   'https://blog.example.com/post/123',
-  { method: 'markdown' }
+  { format: 'markdown' }
 );
 
 // Process the markdown content
@@ -308,19 +308,19 @@ extract(
 
 **Parameters:**
 - `url`: The URL to extract data from
-- `schema`: Zod schema defining the expected data structure (JSON method only)
+- `schema`: Zod schema defining the expected data structure (JSON format only)
 - `config`: Extraction configuration options
 - `timeout`: Request timeout in milliseconds (default: 30000)
 
 **Returns:** 
-- JSON method: Promise resolving to the extracted data matching your schema
-- Markdown method: Promise resolving to raw markdown content as string
+- JSON format: Promise resolving to the extracted data matching your schema
+- Markdown format: Promise resolving to raw markdown content as string
 
 ### Types
 
 ```typescript
 interface JsonConfig {
-  method?: 'json'; // Optional - this is the default
+  format?: 'json'; // Optional - this is the default
   reasoning_effort?: 'medium' | 'high';
   prompt?: string;
   temperature?: number; // 0.0 - 1.5
@@ -328,7 +328,7 @@ interface JsonConfig {
 }
 
 interface MarkdownConfig {
-  method: 'markdown'; // Required for markdown extraction
+  format: 'markdown'; // Required for markdown extraction
   reasoning_effort?: 'medium' | 'high';
   prompt?: string;
   temperature?: number; // 0.0 - 1.5

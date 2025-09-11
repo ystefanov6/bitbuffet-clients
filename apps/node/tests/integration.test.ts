@@ -153,11 +153,11 @@ describe('Integration Tests', () => {
       expect(result.steps.length).toBeGreaterThan(0);
     }, 60000);
 
-    describe('Method Parameter Integration Tests', () => {
+    describe('Format Parameter Integration Tests', () => {
       test('should extract real article as markdown content', async () => {
         const url = 'https://www.bbc.co.uk/news/articles/clyrev00lwno';
         
-        const result = await client.extract(url, { method: 'markdown' }, 45000);
+        const result = await client.extract(url, { format: 'markdown' }, 45000);
         
         expect(typeof result).toBe('string');
         expect(result.length).toBeGreaterThan(100); // Should have substantial content

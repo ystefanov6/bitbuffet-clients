@@ -58,7 +58,7 @@ class BitBuffet:
         prompt: Optional[str] = None,
         top_p: Optional[Union[int, float]] = None,
         temperature: Optional[Union[int, float]] = None,
-        method: Literal['json'] = 'json'
+        format: Literal['json'] = 'json'
     ) -> T: ...
 
     # Overload for markdown extraction without schema
@@ -66,7 +66,7 @@ class BitBuffet:
     def extract(
         self, 
         url: str, 
-        method: Literal['markdown'],
+        format: Literal['markdown'],
         timeout: int = DEFAULT_TIMEOUT//1000,
         reasoning_effort: Optional[Literal['medium', 'high']] = None,
         prompt: Optional[str] = None,
@@ -83,7 +83,7 @@ class BitBuffet:
         prompt: Optional[str] = None,
         top_p: Optional[Union[int, float]] = None,
         temperature: Optional[Union[int, float]] = None,
-        method: Optional[Literal['json', 'markdown']] = None
+        format: Optional[Literal['json', 'markdown']] = None
     ) -> Union[T, str]:
         """
         Extract a webpage and return either a validated Pydantic model instance or markdown string.
@@ -96,11 +96,11 @@ class BitBuffet:
             prompt: Additional custom prompt for extra configurability
             top_p: Top-p sampling parameter for the AI model
             temperature: Temperature parameter for the AI model (0-1.5)
-            method: Extraction method ('json' or 'markdown') - inferred if not provided
+            format: Extraction format ('json' or 'markdown') - inferred if not provided
             
         Returns:
-            For JSON method: Validated Pydantic model instance of the same type as schema_class
-            For markdown method: Raw markdown content as string
+            For JSON format: Validated Pydantic model instance of the same type as schema_class
+            For markdown format: Raw markdown content as string
             
         Raises:
             requests.RequestException: If the API request fails
@@ -110,28 +110,28 @@ class BitBuffet:
         if temperature is not None and top_p is not None:
             raise ValueError("Cannot specify both 'temperature' and 'top_p' parameters. Please use only one.")
         
-        # Determine method and schema based on arguments
+        # Determine format and schema based on arguments
         if isinstance(schema_class_or_method, str) and schema_class_or_method == 'markdown':
             # Markdown extraction
             extraction_method = 'markdown'
             schema_class = None
         else:
             # JSON extraction
-            extraction_method = method or 'json'
+            extraction_method = format or 'json'
             schema_class = schema_class_or_method
             
-        # Validate method and schema requirements
+        # Validate format and schema requirements
         if extraction_method == 'json' and schema_class is None:
-            raise ValueError("json_schema is required when method is 'json'")
+            raise ValueError("json_schema is required when format is 'json'")
         if extraction_method == 'markdown' and schema_class is not None:
-            raise ValueError("json_schema should not be defined when method is 'markdown'")
+            raise ValueError("json_schema should not be defined when format is 'markdown'")
         
         payload = {
             "url": url,
-            "method": extraction_method
+            "format": extraction_method
         }
         
-        # Add schema for JSON method
+        # Add schema for JSON format
         if extraction_method == 'json' and schema_class:
             schema = self._pydantic_to_json_schema(schema_class)
             payload["json_schema"] = schema
@@ -163,11 +163,11 @@ class BitBuffet:
             if not result.get('success'):
                 raise ValueError(f"API returned error: {result.get('error', 'Unknown error')}")
             
-            # Return based on method
+            # Return based on format
             if extraction_method == 'markdown':
                 return result['data']
             else:
-                # Return validated Pydantic model instance for JSON method
+                # Return validated Pydantic model instance for JSON format
                 return schema_class.model_validate(result['data'])
             
         except requests.RequestException as e:
