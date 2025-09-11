@@ -120,6 +120,65 @@ const markdown = await client.extract(
 
 **Note:** When using `method: 'markdown'`, do not provide a schema as the second parameter.
 
+### Method Usage Patterns
+
+The SDK supports two extraction methods via the `method` parameter:
+
+#### JSON Extraction (Default)
+```typescript
+// Method 1a: Schema with optional config (method defaults to 'json')
+const result = await client.extract(
+  'https://example.com/article',
+  ArticleSchema,
+  { 
+    method: 'json', // Optional - this is the default
+    reasoning_effort: 'high' 
+  }
+);
+
+// Method 1b: Schema without config (method defaults to 'json')
+const result = await client.extract(
+  'https://example.com/article',
+  ArticleSchema
+);
+```
+
+#### Markdown Extraction
+```typescript
+// Method 2a: Config object with method specified
+const markdown = await client.extract(
+  'https://example.com/article',
+  { 
+    method: 'markdown',
+    reasoning_effort: 'medium',
+    prompt: 'Focus on main content'
+  }
+);
+
+// Method 2b: Minimal markdown extraction
+const markdown = await client.extract(
+  'https://example.com/article',
+  { method: 'markdown' }
+);
+```
+
+#### Important Method Rules:
+
+1. **JSON Method Requirements:**
+   - A Zod schema MUST be provided as the second parameter
+   - Returns typed data matching your schema
+   - `method: 'json'` is optional (default behavior)
+
+2. **Markdown Method Requirements:**
+   - NO schema should be provided
+   - `method: 'markdown'` MUST be specified in config object
+   - Returns raw markdown string
+   - Schema and markdown method cannot be used together
+
+3. **Method Parameter Location:**
+   - Always specified in the configuration object
+   - Never passed as a separate parameter
+
 ## ⚙️ Configuration Options
 
 Customize the extraction process with various options:
@@ -326,62 +385,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 For detailed documentation, examples, and API reference, visit our [complete documentation](https://bitbuffet.dev/docs/overview).
 
 If you encounter any issues or have questions, please [open an issue](https://github.com/ystefanov6/bitbuffet-clients/issues) on GitHub.
-
-## ⚙️ Method Parameter Usage
-
-The SDK supports two extraction methods via the `method` parameter:
-
-### Method 1: JSON Extraction (Default)
-```typescript
-// Method 1a: Schema with optional config (method defaults to 'json')
-const result = await client.extract(
-  'https://example.com/article',
-  ArticleSchema,
-  { 
-    method: 'json', // Optional - this is the default
-    reasoning_effort: 'high' 
-  }
-);
-
-// Method 1b: Schema without config (method defaults to 'json')
-const result = await client.extract(
-  'https://example.com/article',
-  ArticleSchema
-);
-```
-
-### Method 2: Markdown Extraction
-```typescript
-// Method 2a: Config object with method specified
-const markdown = await client.extract(
-  'https://example.com/article',
-  { 
-    method: 'markdown',
-    reasoning_effort: 'medium',
-    prompt: 'Focus on main content'
-  }
-);
-
-// Method 2b: Minimal markdown extraction
-const markdown = await client.extract(
-  'https://example.com/article',
-  { method: 'markdown' }
-);
-```
-
-### Important Method Rules:
-
-1. **JSON Method Requirements:**
-   - A Zod schema MUST be provided as the second parameter
-   - Returns typed data matching your schema
-   - `method: 'json'` is optional (default behavior)
-
-2. **Markdown Method Requirements:**
-   - NO schema should be provided
-   - `method: 'markdown'` MUST be specified in config object
-   - Returns raw markdown string
-   - Schema and markdown method cannot be used together
-
-3. **Method Parameter Location:**
-   - Always specified in the configuration object
-   - Never passed as a separate parameter

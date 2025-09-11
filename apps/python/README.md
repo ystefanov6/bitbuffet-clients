@@ -240,7 +240,7 @@ BitBuffet(api_key: str)
 
 #### Methods
 
-The `extract` method has two overloaded signatures:
+The `extract` method has two overloaded signatures for type safety:
 
 ##### JSON Extraction (Default)
 ```python
@@ -288,6 +288,23 @@ extract(
 **Raises:**
 - `ValueError`: When method/schema combination is invalid or both temperature and top_p are provided
 - `requests.RequestException`: When API request fails
+
+**Method Overload Rules:**
+
+1. **JSON Method Requirements:**
+   - A Pydantic model class MUST be provided via `schema_class` parameter
+   - Returns an instance of your Pydantic model with validated data
+   - `method="json"` is optional (default behavior)
+
+2. **Markdown Method Requirements:**
+   - NO `schema_class` should be provided
+   - `method="markdown"` MUST be specified
+   - Returns raw markdown content as string
+   - Schema class and markdown method cannot be used together
+
+3. **Type Safety:**
+   - The SDK uses method overloads to enforce these rules at the type level
+   - This ensures type safety and prevents invalid parameter combinations
 
 ## 🛠️ Development
 
@@ -343,83 +360,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 For detailed documentation, examples, and API reference, visit our [complete documentation](https://bitbuffet.dev/docs/overview).
 
 If you encounter any issues or have questions, please [open an issue](https://github.com/ystefanov6/bitbuffet-clients/issues) on GitHub.
-
-
-## ⚙️ Method Parameter Usage
-
-The SDK supports two extraction methods via the `method` parameter:
-
-### Method 1: JSON Extraction (Default)
-```python
-# Method 1a: Schema with explicit method (optional)
-result = client.extract(
-    url="https://example.com/article",
-    schema_class=Article,
-    method="json",  # Optional - this is the default
-    reasoning_effort="high"
-)
-
-# Method 1b: Schema without method parameter (defaults to 'json')
-result = client.extract(
-    url="https://example.com/article",
-    schema_class=Article
-)
-```
-
-### Method 2: Markdown Extraction
-```python
-# Method 2a: Markdown with additional configuration
-markdown = client.extract(
-    url="https://example.com/article",
-    method="markdown",
-    reasoning_effort="medium",
-    prompt="Focus on main content"
-)
-
-# Method 2b: Minimal markdown extraction
-markdown = client.extract(
-    url="https://example.com/article",
-    method="markdown"
-)
-```
-
-### Important Method Rules:
-
-1. **JSON Method Requirements:**
-   - A Pydantic model class MUST be provided via `schema_class` parameter
-   - Returns an instance of your Pydantic model with validated data
-   - `method="json"` is optional (default behavior)
-
-2. **Markdown Method Requirements:**
-   - NO `schema_class` should be provided
-   - `method="markdown"` MUST be specified
-   - Returns raw markdown content as string
-   - Schema class and markdown method cannot be used together
-
-3. **Method Parameter Validation:**
-   - When `method="json"`: `schema_class` is required
-   - When `method="markdown"`: `schema_class` must not be provided
-   - The SDK uses method overloads to enforce these rules at the type level
-
-### Method Overloads Explained:
-
-The SDK provides two distinct method signatures:
-
-```python
-# JSON extraction overload
-def extract(
-    url: str,
-    schema_class: Type[BaseModel],
-    method: Literal['json'] = 'json',
-    # ... other parameters
-) -> BaseModel
-
-# Markdown extraction overload  
-def extract(
-    url: str,
-    method: Literal['markdown'],
-    # ... other parameters
-) -> str
-```
-
-This ensures type safety and prevents invalid parameter combinations.
