@@ -10,7 +10,7 @@ Official client SDKs for the BitBuffet API - Extract structured data from any we
 
 ## 🚀 What is BitBuffet?
 
-BitBuffet is a powerful API that allows you to extract structured data from any web page using AI. Simply provide a URL and define your desired data structure using schemas (Zod for TypeScript/JavaScript, Pydantic for Python), and BitBuffet will intelligently extract the relevant information in the format you need.
+BitBuffet is a powerful API that allows you to extract structured data from any web page using AI. Simply provide a URL and define your desired data structure using schemas (Zod for TypeScript/JavaScript, Pydantic for Python), and BitBuffet will intelligently extract the relevant information in the exact format you need.
 
 ### Key Features
 
@@ -18,6 +18,7 @@ BitBuffet is a powerful API that allows you to extract structured data from any 
 - **🎯 Accurate**: AI-powered extraction with high precision
 - **🔧 Flexible**: Custom prompts and reasoning levels
 - **📊 Structured**: Get data in your exact format using schemas
+- **📝 Raw Content**: Extract raw markdown content when needed
 - **🌐 Universal**: Works with any website or web content (url, image, video, audio, youtube, pdf, etc.)
 - **🔒 Reliable**: Built for production use with proper error handling
 
@@ -38,6 +39,7 @@ npm install bitbuffet
 - Modern async/await API
 - Comprehensive type safety
 - Works in Node.js 16+
+- Support for both JSON and markdown extraction
 
 [📖 View TypeScript/JavaScript Documentation](./apps/node/README.md)
 
@@ -56,12 +58,13 @@ pip install bitbuffet
 - Pythonic API design
 - Support for Python 3.9+
 - Async/await support
+- Support for both JSON and markdown extraction
 
 [📖 View Python Documentation](./apps/python/README.md)
 
 ## 🏃‍♂️ Quick Start Examples
 
-### TypeScript/JavaScript
+### TypeScript/JavaScript - JSON Extraction
 
 ```typescript
 import { BitBuffet } from 'bitbuffet';
@@ -83,7 +86,21 @@ const article = await client.extract(
 console.log(article.title);
 ```
 
-### Python
+### TypeScript/JavaScript - Markdown Extraction
+
+```typescript
+import { BitBuffet } from 'bitbuffet';
+
+const client = new BitBuffet('your-api-key');
+const markdown = await client.extract(
+  'https://example.com/article',
+  { method: 'markdown' }
+);
+
+console.log(markdown);
+```
+
+### Python - JSON Extraction
 
 ```python
 from bitbuffet import BitBuffet
@@ -104,19 +121,87 @@ article = client.extract(
 print(article.title)
 ```
 
+### Python - Markdown Extraction
+
+```python
+from bitbuffet import BitBuffet
+
+client = BitBuffet(api_key="your-api-key")
+markdown = client.extract(
+    url="https://example.com/article",
+    method="markdown"
+)
+
+print(markdown)
+```
+
+## ⚙️ Extraction Methods
+
+Both SDKs support two extraction methods controlled by the `method` parameter:
+
+### JSON Method (Default)
+- **Purpose**: Extract structured data according to your schema
+- **Output**: Validated data matching your schema (Zod/Pydantic model)
+- **Use Case**: When you need specific data fields in a structured format
+- **Requirements**: Schema must be provided
+- **Method Parameter**: `method: 'json'` (optional - this is the default)
+
+### Markdown Method
+- **Purpose**: Extract raw markdown content from the webpage
+- **Output**: Raw markdown string
+- **Use Case**: When you need the full content for processing, analysis, or conversion
+- **Requirements**: No schema needed, method must be explicitly specified
+- **Method Parameter**: `method: 'markdown'` (required)
+
+### TypeScript/JavaScript Method Usage:
+
+```typescript
+// JSON extraction (method parameter optional)
+const structuredData = await client.extract(
+  'https://example.com/article',
+  ArticleSchema,
+  { method: 'json' } // Optional - this is default
+);
+
+// Markdown extraction (method parameter required)
+const markdownContent = await client.extract(
+  'https://example.com/article',
+  { method: 'markdown' }
+);
+```
+
+### Python Method Usage:
+
+```python
+# JSON extraction (method parameter optional)
+structured_data = client.extract(
+    url="https://example.com/article",
+    schema_class=Article,
+    method="json"  # Optional - this is default
+)
+
+# Markdown extraction (method parameter required)
+markdown_content = client.extract(
+    url="https://example.com/article",
+    method="markdown"
+)
+```
+
 ## 🎯 Use Cases
 
 - **Content Aggregation**: Extract articles, blog posts, and news content
-- **E-commerce**: extract product information, prices, and reviews
+- **E-commerce**: Extract product information, prices, and reviews
 - **Lead Generation**: Extract contact information and company details
 - **Market Research**: Gather competitive intelligence and pricing data
 - **Data Migration**: Convert unstructured web content to structured data
+- **Content Processing**: Extract raw content for further analysis or conversion
 - **Monitoring**: Track changes in web content over time
 
 ## 🔧 Configuration Options
 
 Both SDKs support advanced configuration:
 
+- **Method Selection**: Choose between 'json' and 'markdown' extraction
 - **Reasoning Effort**: Choose between 'medium' and 'high' for complex pages
 - **Custom Prompts**: Guide the extraction with specific instructions
 - **Temperature Control**: Adjust consistency vs creativity in extraction

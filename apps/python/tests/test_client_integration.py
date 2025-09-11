@@ -3,11 +3,16 @@ Test suite for the Python Structured Scraper Client SDK for Integration Tests
 """
 
 import pytest
+import os
+from pathlib import Path
+from dotenv import load_dotenv
 
 from bitbuffet import BitBuffet
 from tests.schemas.recipe_schema import RecipeSchema
 from tests.schemas.article_schema import ArticleSchema
-import os
+
+root_dir = Path(__file__).parent.parent.parent.parent
+load_dotenv(root_dir / '.env')
 
 client = BitBuffet(os.getenv("TEST_API_KEY"))
 
@@ -122,3 +127,19 @@ class TestIntegration:
         assert result.title
         assert result.content
         assert result.author
+
+
+class TestMethodParameterIntegration:
+    """Integration tests for the new method parameter functionality"""
+    
+    @pytest.mark.integration
+    @pytest.mark.skip(reason="Requires actual API endpoint and may be slow")
+    def test_real_markdown_extraction(self):
+        """Integration test with real URL for markdown extraction (skipped by default)"""
+        url = "https://www.bbc.co.uk/news/articles/clyrev00lwno"
+        
+        result = client.extract(url, method="markdown")
+        
+        assert isinstance(result, str)
+        assert len(result) > 100  # Should have substantial content
+        assert result.count('#') > 0  # Should contain markdown headers

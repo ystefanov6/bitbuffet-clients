@@ -2,6 +2,11 @@ import { BitBuffet } from '../src/bitbuffet';
 import { describe, test, expect } from '@jest/globals';
 import { RecipeSchema } from './schemas/recipe';
 import { ArticleSchema } from './schemas/article';
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') })
+
 
 const client = new BitBuffet(process.env.TEST_API_KEY as string);
 
@@ -147,5 +152,17 @@ describe('Integration Tests', () => {
       }));
       expect(result.steps.length).toBeGreaterThan(0);
     }, 60000);
+
+    describe('Method Parameter Integration Tests', () => {
+      test('should extract real article as markdown content', async () => {
+        const url = 'https://www.bbc.co.uk/news/articles/clyrev00lwno';
+        
+        const result = await client.extract(url, { method: 'markdown' }, 45000);
+        
+        expect(typeof result).toBe('string');
+        expect(result.length).toBeGreaterThan(100); // Should have substantial content
+        expect(result).toMatch(/^#/m); // Should contain markdown headers
+      }, 60000);
+    });
   });
 });

@@ -7,6 +7,11 @@ import { BitBuffet } from '../src/bitbuffet';
 import { jest, describe, test, expect, beforeEach } from '@jest/globals';
 import { RecipeSchema } from './schemas/recipe';
 import { ArticleSchema } from './schemas/article';
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') })
+
 
 
 // Mock axios
@@ -134,6 +139,7 @@ describe('BitBuffet', () => {
         '/extract',
         {
           url,
+          method: 'json',  // Add this line
           json_schema: expect.any(Object),
           reasoning_effort: 'high',
           prompt: 'Focus on extracting detailed cooking instructions',
@@ -161,6 +167,7 @@ describe('BitBuffet', () => {
       
       expect(payload).toEqual({
         url,
+        method: 'json',  // Add this line
         json_schema: expect.any(Object)
       });
       expect(payload).not.toHaveProperty('reasoning_effort');
@@ -299,6 +306,7 @@ describe('BitBuffet', () => {
         '/extract',
         {
           url,
+          method: 'json',  // Add this line
           json_schema: expect.any(Object),  // This is correct
           reasoning_effort: 'high',
           prompt: 'Focus on extracting detailed cooking instructions',
@@ -333,6 +341,7 @@ describe('BitBuffet', () => {
         '/extract',
         {
           url,
+          method: 'json',  // Add this line
           json_schema: expect.any(Object)
         },
         { timeout: expect.any(Number) }
@@ -387,6 +396,56 @@ describe('BitBuffet', () => {
       await expect(
         client.extract('https://example.com', ArticleSchema)
       ).rejects.toThrow('Validation failed');
+    });
+  });
+
+  describe('Method Parameter Tests', () => {
+    test('should successfully extract markdown content without schema', async () => {
+      // Setup mock response for markdown extraction
+      const mockMarkdownResponse = {
+        success: true,
+        data: '# Article Title\n\nThis is the markdown content of the article...\n\n## Section 1\n\nMore content here.',
+        method: 'markdown'
+      };
+      
+      const mockResponse: Partial<AxiosResponse> = {
+        data: mockMarkdownResponse
+      };
+      mockAxiosInstance.post.mockResolvedValue(mockResponse);
+
+      // Test markdown extraction
+      const url = 'https://example.com/article';
+      const result = await client.extract(url, { method: 'markdown' });
+
+      // Assertions
+      expect(typeof result).toBe('string');
+      expect(result).toContain('# Article Title');
+      expect(result).toContain('This is the markdown content');
+
+      // Verify API call
+      expect(mockAxiosInstance.post).toHaveBeenCalledWith(
+        '/extract',
+        {
+          url,
+          method: 'markdown'
+        },
+        { timeout: expect.any(Number) }
+      );
+    });
+
+    test('should throw error when schema is provided with markdown method', async () => {
+      await expect(client.extract(
+        'https://example.com',
+        ArticleSchema,
+        { method: 'markdown' }
+      )).rejects.toThrow("json_schema should not be defined when method is 'markdown'");
+    });
+
+    test('should throw error when no schema is provided with json method', async () => {
+      await expect(client.extract(
+        'https://example.com',
+        { method: 'json' }
+      )).rejects.toThrow("json_schema is required when method is 'json'");
     });
   });
 });

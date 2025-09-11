@@ -394,3 +394,55 @@ class TestBitBuffet:
         call_args = mock_post.call_args
         assert call_args[1]['timeout'] == 30
 
+
+class TestMethodParameter:
+    """Test cases for the new method parameter functionality"""
+    
+    @patch('bitbuffet.scraper.requests.Session.post')
+    def test_markdown_extraction_success(self, mock_post: Mock):
+        """Test successful markdown extraction without schema"""
+        # Setup mock response for markdown extraction
+        mock_markdown_response = {
+            "success": True,
+            "data": "# Article Title\n\nThis is the markdown content of the article...\n\n## Section 1\n\nMore content here.",
+            "method": "markdown"
+        }
+        
+        mock_response = Mock()
+        mock_response.json.return_value = mock_markdown_response
+        mock_response.raise_for_status.return_value = None
+        mock_post.return_value = mock_response
+        
+        # Test markdown extraction
+        url = "https://example.com/article"
+        result = client.extract(url, method="markdown")
+        
+        # Assertions
+        assert isinstance(result, str)
+        assert "# Article Title" in result
+        assert "This is the markdown content" in result
+        
+        mock_post.assert_called_once()
+        call_args = mock_post.call_args
+        payload = call_args[1]['json']
+        assert payload['url'] == url
+        assert payload['method'] == 'markdown'
+        assert 'json_schema' not in payload
+    
+    def test_method_validation_errors(self):
+        """Test validation errors for method parameter"""
+        # Test error when schema is provided with markdown method
+        with pytest.raises(TypeError, match="got an unexpected keyword argument 'schema_class'"):
+            client.extract(
+                url="https://example.com",
+                schema_class=ArticleSchema,
+                method="markdown"
+            )
+        
+        # Test error when no schema is provided with json method
+        with pytest.raises(ValueError, match="json_schema is required when method is 'json'"):
+            client.extract(
+                url="https://example.com",
+                method="json"
+            )
+

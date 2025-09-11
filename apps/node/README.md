@@ -5,7 +5,7 @@
 [![npm version](https://badge.fury.io/js/bitbuffet.svg)](https://badge.fury.io/js/bitbuffet)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A powerful TypeScript/JavaScript SDK for the BitBuffet API that allows you to extract structured data from any web content using Zod schemas in under two seconds.
+A powerful TypeScript/JavaScript SDK for the BitBuffet API that allows you to extract structured data from any web content using Zod schemas or raw markdown content in under two seconds.
 
 ## 🚀 Features
 
@@ -13,6 +13,7 @@ A powerful TypeScript/JavaScript SDK for the BitBuffet API that allows you to ex
 - **Type-safe**: Built with TypeScript and Zod for complete type safety
 - **Fast**: Extract structured data in under 2 seconds
 - **Flexible**: Support for custom prompts and reasoning levels
+- **Dual Output**: Extract structured JSON data or raw markdown content
 - **Easy to use**: Simple, intuitive API
 - **Well-tested**: Comprehensive test suite with integration tests
 
@@ -27,6 +28,8 @@ pnpm add bitbuffet
 ```
 
 ## 🏃‍♂️ Quick Start
+
+### JSON Extraction (Structured Data)
 
 ```typescript
 import { BitBuffet } from 'bitbuffet';
@@ -63,22 +66,89 @@ try {
 }
 ```
 
+### Markdown Extraction (Raw Content)
+
+```typescript
+import { BitBuffet } from 'bitbuffet';
+
+const client = new BitBuffet('your-api-key-here');
+
+// Extract raw markdown content
+try {
+  const markdown: string = await client.extract(
+    'https://example.com/article',
+    { method: 'markdown' }
+  );
+  
+  console.log('Raw markdown content:');
+  console.log(markdown);
+} catch (error) {
+  console.error('Extraction failed:', error);
+}
+```
+
+## ⚙️ Output Methods
+
+Choose between structured JSON extraction or raw markdown content:
+
+### JSON Method (Default)
+Extracts structured data according to your Zod schema:
+
+```typescript
+const ProductSchema = z.object({
+  name: z.string(),
+  price: z.number(),
+  description: z.string()
+});
+
+const product = await client.extract(
+  'https://example.com/product',
+  ProductSchema,
+  { method: 'json' } // Optional - this is the default
+);
+```
+
+### Markdown Method
+Returns the raw markdown content of the webpage:
+
+```typescript
+const markdown = await client.extract(
+  'https://example.com/article',
+  { method: 'markdown' }
+);
+```
+
+**Note:** When using `method: 'markdown'`, do not provide a schema as the second parameter.
+
 ## ⚙️ Configuration Options
 
 Customize the extraction process with various options:
 
 ```typescript
+// JSON extraction with configuration
 const result = await client.extract(
   'https://example.com/complex-page',
   ArticleSchema,
   {
+    method: 'json', // Optional - default behavior
     reasoning_effort: 'high', // 'medium' | 'high' - Higher effort for complex pages
-    prompt: 'Focus on extracting the main article content, ignoring ads and navigation', // Custom prompt (Not recommended)
+    prompt: 'Focus on extracting the main article content, ignoring ads and navigation',
     temperature: 0.1, // Lower for more consistent results (0.0 - 1.5)
     // OR use top_p instead of temperature
     // top_p: 0.9
   },
   30000 // Timeout in milliseconds (default: 30000)
+);
+
+// Markdown extraction with configuration
+const markdown = await client.extract(
+  'https://example.com/article',
+  {
+    method: 'markdown',
+    reasoning_effort: 'medium',
+    prompt: 'Focus on the main content, ignore navigation and ads'
+  },
+  30000
 );
 ```
 
@@ -130,6 +200,23 @@ const article = await client.extract(
 );
 ```
 
+### Raw Content for Processing
+
+```typescript
+// Extract raw markdown for further processing
+const rawContent = await client.extract(
+  'https://blog.example.com/post/123',
+  { method: 'markdown' }
+);
+
+// Process the markdown content
+const wordCount = rawContent.split(' ').length;
+const hasCodeBlocks = rawContent.includes('```');
+
+console.log(`Content has ${wordCount} words`);
+console.log(`Contains code blocks: ${hasCodeBlocks}`);
+```
+
 ## 🔧 API Reference
 
 ### `BitBuffet` Class
@@ -141,32 +228,55 @@ new BitBuffet(apiKey: string) // API key from https://bitbuffet.dev
 
 #### Methods
 
-##### `extract<T>(url: string, schema: ZodSchema<T>, options?: ExtractionOptions, timeout?: number): Promise<T>`
+##### JSON Extraction
+```typescript
+extract<T>(
+  url: string,
+  schema: ZodSchema<T>,
+  config?: JsonConfig,
+  timeout?: number
+): Promise<T>
+```
 
-Extracts structured data from a URL using the provided Zod schema.
+##### Markdown Extraction
+```typescript
+extract(
+  url: string,
+  config: MarkdownConfig,
+  timeout?: number
+): Promise<string>
+```
 
 **Parameters:**
 - `url`: The URL to extract data from
-- `schema`: Zod schema defining the expected data structure
-- `options`: Optional extraction configuration
+- `schema`: Zod schema defining the expected data structure (JSON method only)
+- `config`: Extraction configuration options
 - `timeout`: Request timeout in milliseconds (default: 30000)
 
-**Returns:** Promise resolving to the extracted data matching your schema
+**Returns:** 
+- JSON method: Promise resolving to the extracted data matching your schema
+- Markdown method: Promise resolving to raw markdown content as string
 
 ### Types
 
 ```typescript
-interface ExtractionOptions {
+interface JsonConfig {
+  method?: 'json'; // Optional - this is the default
   reasoning_effort?: 'medium' | 'high';
   prompt?: string;
   temperature?: number; // 0.0 - 1.5
   top_p?: number; // Alternative to temperature
 }
 
-interface ClientOptions {
-  baseURL?: string;
-  timeout?: number;
+interface MarkdownConfig {
+  method: 'markdown'; // Required for markdown extraction
+  reasoning_effort?: 'medium' | 'high';
+  prompt?: string;
+  temperature?: number; // 0.0 - 1.5
+  top_p?: number; // Alternative to temperature
 }
+
+type ExtractionMethod = 'json' | 'markdown';
 ```
 
 ## 🛠️ Development
@@ -216,3 +326,62 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 For detailed documentation, examples, and API reference, visit our [complete documentation](https://bitbuffet.dev/docs/overview).
 
 If you encounter any issues or have questions, please [open an issue](https://github.com/ystefanov6/bitbuffet-clients/issues) on GitHub.
+
+## ⚙️ Method Parameter Usage
+
+The SDK supports two extraction methods via the `method` parameter:
+
+### Method 1: JSON Extraction (Default)
+```typescript
+// Method 1a: Schema with optional config (method defaults to 'json')
+const result = await client.extract(
+  'https://example.com/article',
+  ArticleSchema,
+  { 
+    method: 'json', // Optional - this is the default
+    reasoning_effort: 'high' 
+  }
+);
+
+// Method 1b: Schema without config (method defaults to 'json')
+const result = await client.extract(
+  'https://example.com/article',
+  ArticleSchema
+);
+```
+
+### Method 2: Markdown Extraction
+```typescript
+// Method 2a: Config object with method specified
+const markdown = await client.extract(
+  'https://example.com/article',
+  { 
+    method: 'markdown',
+    reasoning_effort: 'medium',
+    prompt: 'Focus on main content'
+  }
+);
+
+// Method 2b: Minimal markdown extraction
+const markdown = await client.extract(
+  'https://example.com/article',
+  { method: 'markdown' }
+);
+```
+
+### Important Method Rules:
+
+1. **JSON Method Requirements:**
+   - A Zod schema MUST be provided as the second parameter
+   - Returns typed data matching your schema
+   - `method: 'json'` is optional (default behavior)
+
+2. **Markdown Method Requirements:**
+   - NO schema should be provided
+   - `method: 'markdown'` MUST be specified in config object
+   - Returns raw markdown string
+   - Schema and markdown method cannot be used together
+
+3. **Method Parameter Location:**
+   - Always specified in the configuration object
+   - Never passed as a separate parameter

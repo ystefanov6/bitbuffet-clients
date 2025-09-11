@@ -1,5 +1,5 @@
 import requests
-from typing import Dict, Any, Type, Optional, Literal, TypeVar, Union
+from typing import Dict, Any, Type, Optional, Literal, TypeVar, Union, overload
 import json
 from pydantic import BaseModel
 
@@ -46,31 +46,61 @@ class BitBuffet:
             schema.pop('$defs', None)
         
         return schema
-    
+
+    # Overload for JSON extraction with schema
+    @overload
     def extract(
         self, 
         url: str, 
         schema_class: Type[T], 
-        timeout: int = DEFAULT_TIMEOUT/1000,
+        timeout: int = DEFAULT_TIMEOUT//1000,
+        reasoning_effort: Optional[Literal['medium', 'high']] = None,
+        prompt: Optional[str] = None,
+        top_p: Optional[Union[int, float]] = None,
+        temperature: Optional[Union[int, float]] = None,
+        method: Literal['json'] = 'json'
+    ) -> T: ...
+
+    # Overload for markdown extraction without schema
+    @overload
+    def extract(
+        self, 
+        url: str, 
+        method: Literal['markdown'],
+        timeout: int = DEFAULT_TIMEOUT//1000,
         reasoning_effort: Optional[Literal['medium', 'high']] = None,
         prompt: Optional[str] = None,
         top_p: Optional[Union[int, float]] = None,
         temperature: Optional[Union[int, float]] = None
-    ) -> T:
+    ) -> str: ...
+
+    def extract(
+        self, 
+        url: str, 
+        schema_class_or_method: Union[Type[T], Literal['markdown']] = None,
+        timeout: int = DEFAULT_TIMEOUT//1000,
+        reasoning_effort: Optional[Literal['medium', 'high']] = None,
+        prompt: Optional[str] = None,
+        top_p: Optional[Union[int, float]] = None,
+        temperature: Optional[Union[int, float]] = None,
+        method: Optional[Literal['json', 'markdown']] = None
+    ) -> Union[T, str]:
         """
-        extract a webpage and return a validated Pydantic model instance.
+        Extract a webpage and return either a validated Pydantic model instance or markdown string.
         
         Args:
             url: The URL to extract
-            schema_class: Pydantic BaseModel class to validate against
+            schema_class_or_method: Pydantic BaseModel class for JSON extraction, or 'markdown' for markdown extraction
             timeout: Request timeout in seconds
             reasoning_effort: Reasoning effort level ('medium' or 'high')
             prompt: Additional custom prompt for extra configurability
             top_p: Top-p sampling parameter for the AI model
             temperature: Temperature parameter for the AI model (0-1.5)
+            method: Extraction method ('json' or 'markdown') - inferred if not provided
             
         Returns:
-            Validated Pydantic model instance of the same type as schema_class
+            For JSON method: Validated Pydantic model instance of the same type as schema_class
+            For markdown method: Raw markdown content as string
             
         Raises:
             requests.RequestException: If the API request fails
@@ -80,13 +110,31 @@ class BitBuffet:
         if temperature is not None and top_p is not None:
             raise ValueError("Cannot specify both 'temperature' and 'top_p' parameters. Please use only one.")
         
-        # Convert Pydantic schema to JSON schema
-        schema = self._pydantic_to_json_schema(schema_class)
+        # Determine method and schema based on arguments
+        if isinstance(schema_class_or_method, str) and schema_class_or_method == 'markdown':
+            # Markdown extraction
+            extraction_method = 'markdown'
+            schema_class = None
+        else:
+            # JSON extraction
+            extraction_method = method or 'json'
+            schema_class = schema_class_or_method
+            
+        # Validate method and schema requirements
+        if extraction_method == 'json' and schema_class is None:
+            raise ValueError("json_schema is required when method is 'json'")
+        if extraction_method == 'markdown' and schema_class is not None:
+            raise ValueError("json_schema should not be defined when method is 'markdown'")
         
         payload = {
             "url": url,
-            "json_schema": schema
+            "method": extraction_method
         }
+        
+        # Add schema for JSON method
+        if extraction_method == 'json' and schema_class:
+            schema = self._pydantic_to_json_schema(schema_class)
+            payload["json_schema"] = schema
         
         # Add optional parameters to payload if provided
         if reasoning_effort is not None:
@@ -115,8 +163,12 @@ class BitBuffet:
             if not result.get('success'):
                 raise ValueError(f"API returned error: {result.get('error', 'Unknown error')}")
             
-            # Return validated Pydantic model instance
-            return schema_class.model_validate(result['data'])
+            # Return based on method
+            if extraction_method == 'markdown':
+                return result['data']
+            else:
+                # Return validated Pydantic model instance for JSON method
+                return schema_class.model_validate(result['data'])
             
         except requests.RequestException as e:
             raise requests.RequestException(f"API request failed: {e}")
