@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bitbuffet"
-version = "1.0.1"
+version = "1.0.2"
 description = "Python SDK for the bitbuffet API - BitBuffet"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -45,7 +45,7 @@ Documentation = "https://github.com/ystefanov6/bitbuffet-clients#readme"
 dev = [
     "pytest>=8.4.1",
     "pytest-mock>=3.14.1",
-    "build>=1.0.0",
+    "build>=1.0.1",
     "twine>=4.0.0",
 ]
 
